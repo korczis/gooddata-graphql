@@ -16,6 +16,7 @@ defmodule Webapp.API.V1.AuthController do
     cookies = List.keyfind(res.headers, "Set-Cookie", 0)
       |> elem(1)
       |> String.replace("/gdc", "/")
+      |> String.replace(" Secure; ", "")
 
     conn
     |> put_resp_header("Set-Cookie", cookies)

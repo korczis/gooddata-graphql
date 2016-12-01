@@ -29,6 +29,7 @@ import * as authActions from '../../redux/modules/auth';
 )
 export default class SignIn extends Component {
   static propTypes = {
+    getUser: PropTypes.func,
     payload: PropTypes.object,
     pushState: PropTypes.func.isRequired,
     setProperty: PropTypes.func,
@@ -89,6 +90,7 @@ export default class SignIn extends Component {
                       e.preventDefault();
                       this.props.signIn(this.props.payload.email, this.props.payload.password).then(
                         () => {
+                          this.props.getUser();
                           this.props.pushState('/');
                         },
                         (error) => {
