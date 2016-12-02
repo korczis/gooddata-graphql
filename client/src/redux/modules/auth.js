@@ -22,13 +22,6 @@ const SIGN_UP = generateReduxSymbol('auth/SIGN_UP');
 const SIGN_UP_SUCCESS = generateReduxSymbol('auth/SIGN_UP_SUCCESS');
 const SIGN_UP_FAIL = generateReduxSymbol('auth/SIGN_UP_FAIL');
 
-export function getUser() {
-  return {
-    types: [GET_USER, GET_USER_SUCCESS, GET_USER_FAIL],
-    promise: (client) => client.get('/api/v1/auth/user')
-  };
-}
-
 const initialState = {
   payload: {},
   user: null
@@ -48,7 +41,7 @@ export default function reducer(state = initialState, action = {}) {
     case GET_USER_SUCCESS: {
       return {
         ...state,
-        user: action.result.user
+        user: action.result
       };
     }
 
@@ -90,6 +83,13 @@ export default function reducer(state = initialState, action = {}) {
     default:
       return state;
   }
+}
+
+export function getUser() {
+  return {
+    types: [GET_USER, GET_USER_SUCCESS, GET_USER_FAIL],
+    promise: (client) => client.get('/api/v1/auth/user')
+  };
 }
 
 export function signIn(email, password) {

@@ -42,7 +42,6 @@ defmodule Webapp.Mixfile do
       {:credo, "~> 0.4", only: [:dev, :test]},
       {:dialyxir, "~> 0.3.5", only: [:dev]},
       {:graphql, "~> 0.3"},
-      {:guardian, "~> 0.13.0"},
       {:httpoison, "~> 0.9.2"},
       {:phoenix, "~> 1.2.1", override: true},
       {:phoenix_pubsub, "~> 1.0"},
