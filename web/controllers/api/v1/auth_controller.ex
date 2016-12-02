@@ -17,17 +17,18 @@ defmodule Webapp.API.V1.AuthController do
       end
     )
 
-    cookie_list = Enum.map(cookie_list,
-      fn {_k, v} ->
-        "#{List.first(String.split(v, ";"))}; path=/"
-      end
-    )
-
-    cookies = Enum.join(cookie_list, "; ")
     data = Poison.decode!(res.body)
 
-    conn
-    |> put_resp_header("Set-Cookie", cookies)
+    Enum.reduce(
+      cookie_list,
+      conn,
+      fn {k, v}, c ->
+        cookie = List.first(String.split(v, ";"))
+        [name, value] = String.split(cookie, "=")
+        c
+        |> put_resp_cookie(name, value, [{:path, "/"}])
+      end
+    )
     |> json(data)
   end
 
