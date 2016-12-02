@@ -13,6 +13,7 @@ import createStore from './redux/create';
 import getRoutes from './routes';
 
 import { getUser } from './redux/modules/auth';
+import { projectsGet } from './redux/modules/data';
 
 import Client from './helpers/client';
 
@@ -23,7 +24,13 @@ const dest = document.getElementById('app');
 const store = createStore(myBrowserHistory, client, window.__data); // eslint-disable-line no-underscore-dangle
 const history = syncHistoryWithStore(myBrowserHistory, store);
 
-store.dispatch(getUser());
+store.dispatch(getUser()).then(
+  (res) => {
+    if (res && res.body && res.body.email) {
+      store.dispatch(projectsGet(res.body.links.projects));
+    }
+  }
+);
 
 const renderRouter = (props) => <ReduxAsyncConnect {...props} helpers={{ client }} filter={item => !item.deferred} />;
 const render = routes => {

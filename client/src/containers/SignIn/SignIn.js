@@ -17,6 +17,7 @@ import {
 import Helmet from 'react-helmet';
 
 import * as authActions from '../../redux/modules/auth';
+import * as dataActions from '../../redux/modules/data';
 
 @connect(
   (state) => ({
@@ -24,13 +25,15 @@ import * as authActions from '../../redux/modules/auth';
   }),
   {
     pushState: push,
-    ...authActions
+    ...authActions,
+    ...dataActions
   }
 )
 export default class SignIn extends Component {
   static propTypes = {
     getUser: PropTypes.func,
     payload: PropTypes.object,
+    projectsGet: PropTypes.func,
     pushState: PropTypes.func.isRequired,
     setProperty: PropTypes.func,
     signIn: PropTypes.func
@@ -90,7 +93,9 @@ export default class SignIn extends Component {
                       e.preventDefault();
                       this.props.signIn(this.props.payload.email, this.props.payload.password).then(
                         () => {
-                          this.props.getUser();
+                          this.props.getUser().then(
+                            (res) => this.props.projectsGet(res.body.links.projects)
+                          );
                           this.props.pushState('/');
                         },
                         (error) => {

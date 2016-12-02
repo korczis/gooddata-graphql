@@ -55,7 +55,7 @@ export default class App extends Component {
 
           <Navbar.Collapse>
             <Nav navbar pullRight>
-              {!this.props.user &&
+              {(!this.props.user || !this.props.user.email) &&
                 <LinkContainer to="signin">
                   <NavItem>Sign In</NavItem>
                 </LinkContainer>
@@ -67,7 +67,7 @@ export default class App extends Component {
                 </LinkContainer>
               }
 
-              {this.props.user &&
+              {(this.props.user && this.props.user.email) &&
                 <NavItem
                   onClick={ () => {
                     this.props.signOut().then(() => this.props.pushState('/'));

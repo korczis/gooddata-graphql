@@ -11,7 +11,6 @@ defmodule Webapp.API.V1.AuthController do
       }
     })
 
-
     cookie_list = Enum.filter(res.headers,
       fn {k, _v} ->
         k == "Set-Cookie"
@@ -20,15 +19,12 @@ defmodule Webapp.API.V1.AuthController do
 
     cookie_list = Enum.map(cookie_list,
       fn {_k, v} ->
-        List.first(String.split(v, ";"))
+        "#{List.first(String.split(v, ";"))}; path=/"
       end
     )
 
     cookies = Enum.join(cookie_list, "; ")
     data = Poison.decode!(res.body)
-
-    profile_url = get_in(data, ["userLogin", "profile"])
-    profile = Poison.decode!(Webapp.Request.get(profile_url, cookie_list).body)
 
     conn
     |> put_resp_header("Set-Cookie", cookies)
@@ -41,19 +37,16 @@ defmodule Webapp.API.V1.AuthController do
   end
 
   def user(conn, _params) do
-    data = Poison.decode!(Webapp.Request.get("/gdc/app/account/bootstrap", get_cookies(conn)).body)
+    data = Poison.decode!(Webapp.Request.get("/gdc/app/account/bootstrap", Webapp.Helper.get_cookies(conn)).body)
     user = get_in(data, ["bootstrapResource", "accountSetting"])
 
-    conn
-    |> json(user)
-  end
-
-  defp get_cookies(conn) do
-    Enum.filter(conn.req_headers,
-      fn {k, _v} ->
-        k == "cookie"
-      end
-    )
-    |> Enum.map(fn {_k, v} -> v end)
+    case user do
+      nil ->
+       conn
+       |> json(%{})
+      _ ->
+       conn
+       |> json(user)
+    end
   end
 end
