@@ -16,9 +16,10 @@ defmodule Webapp.Request do
     HTTPoison.post!(remote_url, Poison.encode!(payload), get_headers(cookies))
   end
 
-  defp get_headers(cookies \\ nil) do
-    headers = case cookies do
+  defp get_headers(cookies) do
+    case cookies do
       nil -> @headers
+      [] -> @headers
       _ -> @headers ++ [{"cookie", Enum.join(cookies, "; ")}]
     end
   end

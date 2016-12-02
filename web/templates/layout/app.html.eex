@@ -17,6 +17,8 @@
 
     <!-- Optional theme -->
     <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
+
+    <link href="//cdn.jsdelivr.net/graphiql/0.8.0/graphiql.css" rel="stylesheet" />
   </head>
 
   <body>

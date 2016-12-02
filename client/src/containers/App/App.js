@@ -54,6 +54,16 @@ export default class App extends Component {
           </Navbar.Header>
 
           <Navbar.Collapse>
+            <Nav navbar>
+              {(this.props.user && this.props.user.email) &&
+                <NavItem
+                  onClick={ () => {
+                    window.location.href = '/graphiql';
+                  }}
+                >GraphQL</NavItem>
+              }
+            </Nav>
+
             <Nav navbar pullRight>
               {(!this.props.user || !this.props.user.email) &&
                 <LinkContainer to="signin">

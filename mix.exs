@@ -18,6 +18,8 @@ defmodule Webapp.Mixfile do
   def application do
     [mod: {Webapp, []},
      applications: [
+      :absinthe,
+      :absinthe_plug,
       :phoenix,
       :phoenix_pubsub,
       :phoenix_html,
@@ -38,10 +40,11 @@ defmodule Webapp.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:absinthe, "~> 1.2.0"},
+      {:absinthe_plug, "~> 1.2.0"},
       {:comeonin, "~> 2.3"},
       {:credo, "~> 0.4", only: [:dev, :test]},
       {:dialyxir, "~> 0.3.5", only: [:dev]},
-      {:graphql, "~> 0.3"},
       {:httpoison, "~> 0.9.2"},
       {:phoenix, "~> 1.2.1", override: true},
       {:phoenix_pubsub, "~> 1.0"},

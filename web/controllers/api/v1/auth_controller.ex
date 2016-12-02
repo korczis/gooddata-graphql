@@ -22,7 +22,7 @@ defmodule Webapp.API.V1.AuthController do
     Enum.reduce(
       cookie_list,
       conn,
-      fn {k, v}, c ->
+      fn {_k, v}, c ->
         cookie = List.first(String.split(v, ";"))
         [name, value] = String.split(cookie, "=")
         c

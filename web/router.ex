@@ -32,6 +32,10 @@ defmodule Webapp.Router do
     get  "/auth/user", AuthController, :user
   end
 
+  get "/graphiql", Absinthe.Plug.GraphiQL, schema: Webapp.Schema
+  post "/graphiql", Absinthe.Plug.GraphiQL, schema: Webapp.Schema
+  forward "/graphql", Absinthe.Plug, schema: Webapp.Schema
+
   scope "/", Webapp do
     pipe_through :browser # Use the default browser stack
 

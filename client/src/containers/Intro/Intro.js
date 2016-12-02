@@ -12,7 +12,7 @@ export default class Intro extends Component {
             <p>Commercialize and Monetize Your Data.</p>
 
             <p>
-              <Link to="/" className="btn btn-primary btn-lg" role="button" style={{marginRight: '5px'}}>
+              <Link to="/signin" className="btn btn-primary btn-lg" role="button" style={{marginRight: '5px'}}>
                 Login &raquo;
               </Link>
 
