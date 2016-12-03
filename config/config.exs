@@ -14,6 +14,9 @@ config :webapp, Webapp.Endpoint,
            adapter: Phoenix.PubSub.PG2],
   gooddata: [
     host: "secure.gooddata.com"
+  ],
+  httpoison: [
+  #  hackney: [:insecure]
   ]
 
 # Configures Elixir's Logger

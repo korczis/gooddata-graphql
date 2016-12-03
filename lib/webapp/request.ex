@@ -6,14 +6,16 @@ defmodule Webapp.Request do
     {"Accept", "application/json"}
   ]
 
+  @options Application.get_env(:webapp, Webapp.Endpoint)[:httpoison]
+
   def get(url, cookies \\ nil) do
     remote_url = "https://#{@host}#{url}"
-    HTTPoison.get!(remote_url, get_headers(cookies))
+    HTTPoison.get!(remote_url, get_headers(cookies), @options)
   end
 
   def post(url, payload, cookies \\ nil) do
     remote_url = "https://#{@host}#{url}"
-    HTTPoison.post!(remote_url, Poison.encode!(payload), get_headers(cookies))
+    HTTPoison.post!(remote_url, Poison.encode!(payload), get_headers(cookies), @options)
   end
 
   defp get_headers(cookies) do
