@@ -6,5 +6,9 @@ defmodule Webapp.Schema do
     field :projects, list_of(:project) do
       resolve &Webapp.ProjectResolver.all/2
     end
+
+    field :roles, list_of(:role) do
+      resolve &Webapp.RoleResolver.all/2
+    end
   end
 end
