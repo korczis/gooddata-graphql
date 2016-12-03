@@ -13,6 +13,10 @@ defmodule Webapp.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :graphql do
+    plug Webapp.Context
+  end
+
   scope "/api/v1", as: :api_v1, alias: Webapp.API.V1 do
     pipe_through :api
 
@@ -32,9 +36,18 @@ defmodule Webapp.Router do
     get  "/auth/user", AuthController, :user
   end
 
-  get "/graphiql", Absinthe.Plug.GraphiQL, schema: Webapp.Schema
-  post "/graphiql", Absinthe.Plug.GraphiQL, schema: Webapp.Schema
-  forward "/graphql", Absinthe.Plug, schema: Webapp.Schema
+  scope "/graphiql" do
+    pipe_through :graphql
+
+    get "/", Absinthe.Plug.GraphiQL, schema: Webapp.Schema
+    post "/", Absinthe.Plug.GraphiQL, schema: Webapp.Schema
+  end
+
+  scope "/graphql" do
+    pipe_through :graphql
+
+    forward "/", Absinthe.Plug, schema: Webapp.Schema
+  end
 
   scope "/", Webapp do
     pipe_through :browser # Use the default browser stack
