@@ -13,8 +13,7 @@ defmodule Webapp.Schema.Types do
     field :title, :string
     # Other
     field :roles, list_of(:role) do
-      arg :id, :string
-      resolve &Webapp.RoleResolver.find_multiple/2
+      resolve &Webapp.RoleResolver.find_multiple/3
     end
   end
 

@@ -24,7 +24,8 @@ defmodule Webapp.RoleResolver do
     {:ok, %{}}
   end
 
-  def find_multiple(_args, info) do
+  def find_multiple(parent, _args, info) do
+    IO.inspect(parent)
     cookies = Webapp.Helper.transform_cookies(info)
 
     %{source: %{id: id}} = info
