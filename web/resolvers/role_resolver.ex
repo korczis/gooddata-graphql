@@ -1,4 +1,20 @@
 defmodule Webapp.RoleResolver do
+  require Webapp.Mapper
+
+  import Webapp.Mapper, only: [remap: 3]
+
+  @mapping [
+    id: ["links.roleUsers", &Webapp.RoleResolver.to_id/1],
+    identifier: "meta.identifier",
+    title: "meta.title",
+    summary: "meta.summary"
+  ]
+
+  def to_id(url) do
+    parts = String.split(url, "/")
+    "#{Enum.fetch!(parts, 3)}/#{Enum.fetch!(parts, 5)}"
+  end
+
   def all(_args, _info) do
     {:ok, []}
   end
@@ -18,13 +34,7 @@ defmodule Webapp.RoleResolver do
       get_in(res, ["projectRoles", "roles"]),
       fn(url) ->
         role = Poison.decode!(Webapp.Request.get(url, cookies).body)
-        parts = String.split(url, "/")
-        %{
-          id: "#{Enum.fetch!(parts, 3)}/#{Enum.fetch!(parts, 5)}",
-          identifier: get_in(role, ["projectRole", "meta", "identifier"]),
-          title: get_in(role, ["projectRole", "meta", "title"]),
-          summary: get_in(role, ["projectRole", "meta", "summary"]),
-        }
+        remap(role, @mapping, root: "projectRole")
       end
     )
 
