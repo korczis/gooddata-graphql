@@ -7,7 +7,10 @@ defmodule Webapp.RoleResolver do
     id: ["links.roleUsers", &Webapp.RoleResolver.to_id/1],
     identifier: "meta.identifier",
     title: "meta.title",
-    summary: "meta.summary"
+    summary: "meta.summary",
+    url: "links.self",
+    created: "meta.created",
+    updated: "meta.updated"
   ]
 
   def to_id(url) do
@@ -19,26 +22,39 @@ defmodule Webapp.RoleResolver do
     {:ok, []}
   end
 
-  def find(%{id: id}, _info) do
-    IO.inspect(id)
-    {:ok, %{}}
+  def find(%{id: id}, info) do
+    cookies = Webapp.Helper.transform_cookies(info)
+
+    IO.puts(id)
+
+    raw_role = get_role(id, cookies)
+    res = remap(raw_role, @mapping, root: "projectRole")
+    role = Map.put(res, :url, get_role_url(id))
+
+    {:ok, role}
   end
 
   def find_multiple(parent, _args, info) do
-    IO.inspect(parent)
     cookies = Webapp.Helper.transform_cookies(info)
 
-    %{source: %{id: id}} = info
-
-    res = Poison.decode!(Webapp.Request.get("/gdc/projects/#{id}/roles", cookies).body)
     roles = Enum.map(
-      get_in(res, ["projectRoles", "roles"]),
-      fn(url) ->
-        role = Poison.decode!(Webapp.Request.get(url, cookies).body)
-        remap(role, @mapping, root: "projectRole")
+      get_in(parent, [:roles]),
+      fn(id) ->
+        role = get_role(id, cookies)
+        res = remap(role, @mapping, root: "projectRole")
+        Map.put(res, :url, get_role_url(id))
       end
     )
 
-    {:ok, roles}
+     {:ok, roles}
+  end
+
+  defp get_role(role_id, cookies) do
+    Poison.decode!(Webapp.Request.get(get_role_url(role_id), cookies).body)
+  end
+
+  defp get_role_url(role_id) do
+    parts = String.split(role_id, "/")
+    "/gdc/projects/#{Enum.fetch!(parts, 0)}/roles/#{Enum.fetch!(parts, 1)}"
   end
 end

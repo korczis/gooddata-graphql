@@ -15,5 +15,10 @@ defmodule Webapp.Schema do
     field :roles, list_of(:role) do
       resolve &Webapp.RoleResolver.all/2
     end
+
+    field :role, type: :role do
+      arg :id, non_null(:id)
+      resolve &Webapp.RoleResolver.find/2
+    end
   end
 end

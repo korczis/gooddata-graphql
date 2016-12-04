@@ -20,9 +20,12 @@ defmodule Webapp.Schema.Types do
   @desc "Role"
   object :role do
     field :id, :id
+    field :url, :string
     field :identifier, :string
     field :title, :string
     field :summary, :string
+    field :created, :string
+    field :updated, :string
   end
 
   @desc "Permissions"

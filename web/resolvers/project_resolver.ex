@@ -23,7 +23,7 @@ defmodule Webapp.ProjectResolver do
     data = Enum.map(
       projects,
       fn(project) ->
-        transform_project(project)
+        transform_project(project, cookies)
       end
     )
 
@@ -36,12 +36,21 @@ defmodule Webapp.ProjectResolver do
     url = "/gdc/projects/#{id}"
     res = Poison.decode!(Webapp.Request.get(url, cookies).body)
 
-    {:ok, transform_project(res)}
+    {:ok, transform_project(res, cookies)}
   end
 
 
-  defp transform_project(project) do
+  defp transform_project(project, cookies) do
+    res = Poison.decode!(Webapp.Request.get(get_in(project, ["project", "links", "roles"]), cookies).body)
+    roles = Enum.map(
+      get_in(res, ["projectRoles", "roles"]),
+      fn(url) ->
+        parts = String.split(url, "/")
+        "#{Enum.fetch!(parts, 3)}/#{Enum.fetch!(parts, 5)}"
+      end
+    )
+
     result = remap(project, @mapping, root: "project")
-    Map.put(result, :roles, [%{id: "123"}])
+    Map.put(result, :roles, roles)
   end
 end
