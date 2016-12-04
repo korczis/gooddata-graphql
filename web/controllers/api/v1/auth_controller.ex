@@ -41,6 +41,7 @@ defmodule Webapp.API.V1.AuthController do
     data = Poison.decode!(Webapp.Request.get("/gdc/app/account/bootstrap", Webapp.Helper.get_cookies(conn)).body)
     user = get_in(data, ["bootstrapResource", "accountSetting"])
     user_url = get_in(data, ["bootstrapResource", "accountSetting", "links", "self"])
+    projects_url = get_in(data, ["bootstrapResource", "accountSetting", "links", "projects"])
 
     case user do
       nil ->
@@ -49,6 +50,7 @@ defmodule Webapp.API.V1.AuthController do
       _ ->
        conn
        |> put_resp_cookie("User", user_url, [{:path, "/"}])
+       |> put_resp_cookie("Projects", projects_url, [{:path, "/"}])
        |> json(user)
     end
   end
