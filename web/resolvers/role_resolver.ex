@@ -25,8 +25,6 @@ defmodule Webapp.RoleResolver do
   def find(%{id: id}, info) do
     cookies = Webapp.Helper.transform_cookies(info)
 
-    IO.puts(id)
-
     raw_role = get_role(id, cookies)
     res = remap(raw_role, @mapping, root: "projectRole")
     role = Map.put(res, :url, get_role_url(id))
