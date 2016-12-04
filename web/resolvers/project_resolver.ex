@@ -1,4 +1,17 @@
 defmodule Webapp.ProjectResolver do
+  require Webapp.Mapper
+
+  import Webapp.Mapper, only: [uri_to_id: 0, remap: 3]
+
+  @mapping [
+    id: ["links.self", uri_to_id],
+    url: "links.self",
+    environment: "content.environment",
+    driver: "content.driver",
+    state: "content.state",
+    title: "meta.title"
+  ]
+
   def all(_args, info) do
     cookies = Webapp.Helper.transform_cookies(info)
 
@@ -28,17 +41,7 @@ defmodule Webapp.ProjectResolver do
 
 
   defp transform_project(project) do
-    url = get_in(project, ["project", "links", "self"])
-    roles_url = get_in(project, ["project", "links", "roles"])
-    id = Enum.fetch!(String.split(url, "/"), 3)
-    %{
-      id: id,
-      url: url,
-      environment: get_in(project, ["project", "content", "environment"]),
-      driver: get_in(project, ["project", "content", "driver"]),
-      state: get_in(project, ["project", "content", "state"]),
-      title: get_in(project, ["project", "meta", "title"]),
-      roles: [%{id: "123"}]
-    }
+    result = remap(project, @mapping, root: "project")
+    Map.put(result, :roles, [%{id: "123"}])
   end
 end
