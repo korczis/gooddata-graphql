@@ -4,14 +4,26 @@ defmodule Webapp.Schema.Types do
   @desc "GoodData Project"
   object :project do
     field :id, :id
+    field :url, :string
+    # Content
+    field :environment, :string
+    field :driver, :string
+    field :state, :string
+    # Meta
     field :title, :string
-    field :roles, list_of(:role)
+    # Other
+    field :roles, list_of(:role) do
+      arg :id, :string
+      resolve &Webapp.RoleResolver.find_multiple/2
+    end
   end
 
   @desc "Role"
   object :role do
     field :id, :id
+    field :identifier, :string
     field :title, :string
+    field :summary, :string
   end
 
   @desc "Permissions"

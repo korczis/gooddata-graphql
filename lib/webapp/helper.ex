@@ -7,4 +7,8 @@ defmodule Webapp.Helper do
     )
     |> Enum.map(fn {_k, v} -> v end)
   end
+
+  def transform_cookies(info) do
+    String.split(List.first(Map.get(info.context, :cookies)), "; ")
+  end
 end
