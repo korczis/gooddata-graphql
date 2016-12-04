@@ -6,10 +6,13 @@ defmodule Webapp.ProjectResolver do
   @mapping [
     id: ["links.self", uri_to_id],
     url: "links.self",
-    environment: "content.environment",
+    cluster: "content.cluster",
     driver: "content.driver",
+    environment: "content.environment",
     state: "content.state",
-    title: "meta.title"
+    title: "meta.title",
+    created: "meta.created",
+    updated: "meta.updated"
   ]
 
   def all(_args, info) do

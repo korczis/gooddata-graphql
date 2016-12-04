@@ -6,11 +6,14 @@ defmodule Webapp.Schema.Types do
     field :id, :id
     field :url, :string
     # Content
-    field :environment, :string
+    field :cluster, :string
     field :driver, :string
+    field :environment, :string
     field :state, :string
     # Meta
     field :title, :string
+    field :created, :string
+    field :updated, :string
     # Other
     field :roles, list_of(:role) do
       resolve &Webapp.RoleResolver.find_multiple/3
