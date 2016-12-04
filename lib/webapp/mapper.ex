@@ -15,11 +15,13 @@ defmodule Webapp.Mapper do
     end
   end
 
+  def from_uri(uri, nth \\ :last)
+
   def from_uri(nil, _) do
     nil
   end
 
-  def from_uri(uri, nth \\ :last) do
+  def from_uri(uri, nth) do
     path = String.split(uri, "/")
     case nth do
       :last -> List.last(path)
