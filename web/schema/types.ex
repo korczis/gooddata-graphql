@@ -97,8 +97,18 @@ defmodule Webapp.Schema.Types do
       field :roles, list_of(:role) do
         resolve &Webapp.RoleResolver.find_multiple/3
       end
-      field :author, :user
-      field :contributor, :user
+      field :author, :user, resolve: fn(_args, info) ->
+        source = Map.get(info, :source)
+        author = Map.get(source, :author)
+        id = List.last(String.split(author, "/"))
+        Webapp.UserResolver.find(%{id: id}, info)
+      end
+      field :contributor, :user, resolve: fn(_args, info) ->
+        source = Map.get(info, :source)
+        author = Map.get(source, :author)
+        id = List.last(String.split(author, "/"))
+        Webapp.UserResolver.find(%{id: id}, info)
+     end
     end
 
     @desc "Role"
@@ -110,8 +120,20 @@ defmodule Webapp.Schema.Types do
       field :summary, :string
       field :created, :string
       field :updated, :string
-      field :author, :user
-      field :contributor, :user
+      field :author, :user, resolve: fn(_args, info) ->
+        source = Map.get(info, :source)
+        author = Map.get(source, :author)
+        id = List.last(String.split(author, "/"))
+        Webapp.UserResolver.find(%{id: id}, info)
+      end
+      field :contributor, :user, resolve: fn(_args, info) ->
+        source = Map.get(info, :source)
+        author = Map.get(source, :contributor)
+        id = List.last(String.split(author, "/"))
+        Webapp.UserResolver.find(%{id: id}, info)
+      end
+      field :guided_navigation, :string
+      field :is_public, :string
     end
 
     @desc "User"

@@ -13,7 +13,11 @@ defmodule Webapp.ProjectResolver do
     summary: "meta.summary",
     title: "meta.title",
     created: "meta.created",
-    updated: "meta.updated"
+    updated: "meta.updated",
+    author: "meta.author",
+    contributor: "meta.contributor",
+    guided_navigation: "content.guidedNavigation",
+    is_public: "content.isPublic",
   ]
 
   def all(_args, info) do

@@ -9,6 +9,8 @@ defmodule Webapp.RoleResolver do
     title: "meta.title",
     summary: "meta.summary",
     url: "links.self",
+    author: "meta.author",
+    contributor: "meta.contributor",
     created: "meta.created",
     updated: "meta.updated"
   ]
