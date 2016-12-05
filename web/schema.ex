@@ -20,5 +20,10 @@ defmodule Webapp.Schema do
       arg :id, non_null(:id)
       resolve &Webapp.RoleResolver.find/2
     end
+
+    field :user, type: :user do
+      arg :id, non_null(:id)
+      resolve &Webapp.UserResolver.find/2
+    end
   end
 end

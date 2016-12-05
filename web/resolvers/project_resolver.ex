@@ -10,6 +10,7 @@ defmodule Webapp.ProjectResolver do
     driver: "content.driver",
     environment: "content.environment",
     state: "content.state",
+    summary: "meta.summary",
     title: "meta.title",
     created: "meta.created",
     updated: "meta.updated"

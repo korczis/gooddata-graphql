@@ -1,36 +1,6 @@
 defmodule Webapp.Schema.Types do
   use Absinthe.Schema.Notation
 
-  @desc "GoodData Project"
-  object :project do
-    field :id, :id
-    field :url, :string
-    # Content
-    field :cluster, :string
-    field :driver, :string
-    field :environment, :string
-    field :state, :string
-    # Meta
-    field :title, :string
-    field :created, :string
-    field :updated, :string
-    # Other
-    field :roles, list_of(:role) do
-      resolve &Webapp.RoleResolver.find_multiple/3
-    end
-  end
-
-  @desc "Role"
-  object :role do
-    field :id, :id
-    field :url, :string
-    field :identifier, :string
-    field :title, :string
-    field :summary, :string
-    field :created, :string
-    field :updated, :string
-  end
-
   @desc "Permissions"
   object :permissions do
     field :canAccessIntegration, :string
@@ -108,4 +78,52 @@ defmodule Webapp.Schema.Types do
     field :canCreateAttribute, :string
     field :canAssignUserWithRole, :string
   end
+
+  @desc "Project"
+    object :project do
+      field :id, :id
+      field :url, :string
+      # Content
+      field :cluster, :string
+      field :driver, :string
+      field :environment, :string
+      field :state, :string
+      # Meta
+      field :summary, :string
+      field :title, :string
+      field :created, :string
+      field :updated, :string
+      # Other
+      field :roles, list_of(:role) do
+        resolve &Webapp.RoleResolver.find_multiple/3
+      end
+      field :author, :user
+      field :contributor, :user
+    end
+
+    @desc "Role"
+    object :role do
+      field :id, :id
+      field :url, :string
+      field :identifier, :string
+      field :title, :string
+      field :summary, :string
+      field :created, :string
+      field :updated, :string
+      field :author, :user
+      field :contributor, :user
+    end
+
+    @desc "User"
+    object :user do
+      field :id, :id
+      field :url, :string
+      field :email, :string
+      field :language, :string
+      field :login, :string
+      field :position, :string
+      field :timezone, :string
+      field :created, :string
+      field :updated, :string
+    end
 end
