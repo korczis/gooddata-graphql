@@ -35,7 +35,7 @@ defmodule Webapp.RoleResolver do
   def find_multiple(parent, _args, info) do
     cookies = Webapp.Helper.transform_cookies(info)
 
-    roles = Enum.map(
+    roles = Parallel.map(
       get_in(parent, [:roles]),
       fn(id) ->
         role = get_role(id, cookies)

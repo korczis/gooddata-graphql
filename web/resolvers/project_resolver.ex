@@ -46,7 +46,7 @@ defmodule Webapp.ProjectResolver do
 
   defp transform_project(project, cookies) do
     res = Poison.decode!(Webapp.Request.get(get_in(project, ["project", "links", "roles"]), cookies).body)
-    roles = Enum.map(
+    roles = Parallel.map(
       get_in(res, ["projectRoles", "roles"]),
       fn(url) ->
         parts = String.split(url, "/")
