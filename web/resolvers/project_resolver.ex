@@ -24,7 +24,7 @@ defmodule Webapp.ProjectResolver do
 
     projects = Map.get(res, "projects")
 
-    data = Enum.map(
+    data = Parallel.map(
       projects,
       fn(project) ->
         transform_project(project, cookies)
