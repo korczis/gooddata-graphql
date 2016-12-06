@@ -25,7 +25,7 @@ defmodule Webapp.UserResolver do
 
     res = Poison.decode!(Webapp.Request.get(url, cookies).body)
     user_urls = get_in(res, ["associatedUsers", "users"])
-    users = Enum.map(
+    users = Parallel.map(
       user_urls,
       fn(url) ->
         id = List.last(String.split(url, "/"))
