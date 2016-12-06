@@ -12,10 +12,12 @@ defmodule Webapp.Router do
   pipeline :api do
     plug :accepts, ["json"]
     plug :fetch_cookies
+    plug Webapp.TTRefresh
   end
 
   pipeline :graphql do
     plug :fetch_cookies
+    plug Webapp.TTRefresh
     plug Webapp.Context
   end
 
