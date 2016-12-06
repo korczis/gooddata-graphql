@@ -5,9 +5,8 @@ defmodule Webapp.API.V1.ProxyController do
 
   def proxy(conn, params) do
     url = "/#{Enum.join(params["path"], "/")}"
-    cookies = Webapp.Helper.get_cookies(conn)
 
-    res = Webapp.Request.get(url, cookies)
+    res = Webapp.Request.get(url, conn.cookies)
 
     data = Poison.decode!(res.body)
     conn
