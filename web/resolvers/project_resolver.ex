@@ -14,8 +14,8 @@ defmodule Webapp.ProjectResolver do
     title: "meta.title",
     created: "meta.created",
     updated: "meta.updated",
-    author: "meta.author",
-    contributor: "meta.contributor",
+    author: ["meta.author", uri_to_id],
+    contributor: ["meta.contributor", uri_to_id],
     guided_navigation: "content.guidedNavigation",
     is_public: "content.isPublic",
   ]
