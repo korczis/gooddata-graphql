@@ -87,6 +87,8 @@ defmodule Webapp.Schema.Types do
       field :cluster, :string
       field :driver, :string
       field :environment, :string
+      field :guided_navigation, :string
+      field :is_public, :string
       field :state, :string
       # Meta
       field :summary, :string
