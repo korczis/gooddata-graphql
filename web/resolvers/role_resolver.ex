@@ -25,7 +25,7 @@ defmodule Webapp.RoleResolver do
   end
 
   def find(%{id: id}, info) do
-    cookies = Webapp.Helper.transform_cookies(info)
+    cookies = info.context.cookies
 
     raw_role = get_role(id, cookies)
     res = remap(raw_role, @mapping, root: "projectRole")
@@ -35,7 +35,7 @@ defmodule Webapp.RoleResolver do
   end
 
   def find_multiple(parent, _args, info) do
-    cookies = Webapp.Helper.transform_cookies(info)
+    cookies = info.context.cookies
 
     roles = Parallel.map(
       get_in(parent, [:roles]),

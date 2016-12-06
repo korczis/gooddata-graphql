@@ -11,25 +11,10 @@ defmodule Webapp.API.V1.AuthController do
       }
     })
 
-    cookie_list = Enum.filter(res.headers,
-      fn {k, _v} ->
-        k == "Set-Cookie"
-      end
-    )
-
-    data = Poison.decode!(res.body)
-
-    Enum.reduce(
-      cookie_list,
-      conn,
-      fn {_k, v}, c ->
-        cookie = List.first(String.split(v, ";"))
-        [name, value] = String.split(cookie, "=")
-        c
-        |> put_resp_cookie(name, value, [{:path, "/"}])
-      end
-    )
-    |> json(data)
+    conn
+    |> put_cookies(res)
+    |> Webapp.Helper.tt_refreshed
+    |> json(Poison.decode!(res.body))
   end
 
   def sign_out(conn, _params) do
@@ -38,7 +23,7 @@ defmodule Webapp.API.V1.AuthController do
   end
 
   def user(conn, _params) do
-    data = Poison.decode!(Webapp.Request.get("/gdc/app/account/bootstrap", Webapp.Helper.get_cookies(conn)).body)
+    data = Poison.decode!(Webapp.Request.get("/gdc/app/account/bootstrap", conn.cookies).body)
     user = get_in(data, ["bootstrapResource", "accountSetting"])
     user_url = get_in(data, ["bootstrapResource", "accountSetting", "links", "self"])
     projects_url = get_in(data, ["bootstrapResource", "accountSetting", "links", "projects"])
@@ -53,5 +38,13 @@ defmodule Webapp.API.V1.AuthController do
        |> put_resp_cookie("Projects", projects_url, [{:path, "/"}])
        |> json(user)
     end
+  end
+
+  defp put_cookies(conn, response) do
+    Enum.reduce(
+      Webapp.Request.get_cookies(response),
+      conn,
+      fn {name, value}, c -> put_resp_cookie(c, name, value, [{:path, "/"}]) end
+    )
   end
 end

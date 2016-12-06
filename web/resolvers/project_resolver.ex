@@ -21,9 +21,9 @@ defmodule Webapp.ProjectResolver do
   ]
 
   def all(_args, info) do
-    cookies = Webapp.Helper.transform_cookies(info)
+    cookies = info.context.cookies
 
-    projects_cookie = String.replace(List.first(Enum.filter(cookies, fn(c) -> String.starts_with?(c, "Projects=") end)), "Projects=", "")
+    projects_cookie = Map.fetch!(cookies, "Projects")
     res = Poison.decode!(Webapp.Request.get(projects_cookie, cookies).body)
 
     projects = Map.get(res, "projects")
@@ -39,7 +39,7 @@ defmodule Webapp.ProjectResolver do
   end
 
   def find(%{id: id}, info) do
-    cookies = Webapp.Helper.transform_cookies(info)
+    cookies = info.context.cookies
 
     url = "/gdc/projects/#{id}"
     res = Poison.decode!(Webapp.Request.get(url, cookies).body)

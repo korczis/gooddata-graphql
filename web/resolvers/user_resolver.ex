@@ -16,7 +16,7 @@ defmodule Webapp.UserResolver do
   ]
 
   def find(%{id: id}, info) do
-    cookies = Webapp.Helper.transform_cookies(info)
+    cookies = info.context.cookies
 
     user_url = "/gdc/account/profile/#{id}"
     res = Poison.decode!(Webapp.Request.get(user_url, cookies).body)

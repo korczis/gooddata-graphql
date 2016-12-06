@@ -11,9 +11,11 @@ defmodule Webapp.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug :fetch_cookies
   end
 
   pipeline :graphql do
+    plug :fetch_cookies
     plug Webapp.Context
   end
 
