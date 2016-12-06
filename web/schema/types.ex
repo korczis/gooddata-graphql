@@ -132,6 +132,11 @@ defmodule Webapp.Schema.Types do
         id = List.last(String.split(author, "/"))
         Webapp.UserResolver.find(%{id: id}, info)
       end
+      field :users, list_of(:user), resolve: fn(_args, info) ->
+        source = Map.fetch!(info, :source)
+        url = "#{Map.fetch!(source, :url)}/users"
+        Webapp.UserResolver.find_role_users(%{url: url}, info)
+      end
       field :guided_navigation, :string
       field :is_public, :string
     end

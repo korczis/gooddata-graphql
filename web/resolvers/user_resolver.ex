@@ -17,11 +17,28 @@ defmodule Webapp.UserResolver do
 
   def find(%{id: id}, info) do
     cookies = info.context.cookies
+    {:ok, get_user(id, cookies)}
+  end
 
+  def find_role_users(%{url: url}, info) do
+    cookies = info.context.cookies
+
+    res = Poison.decode!(Webapp.Request.get(url, cookies).body)
+    user_urls = get_in(res, ["associatedUsers", "users"])
+    users = Enum.map(
+      user_urls,
+      fn(url) ->
+        id = List.last(String.split(url, "/"))
+        get_user(id, cookies)
+      end
+    )
+
+    {:ok, users}
+  end
+
+  defp get_user(id, cookies) do
     user_url = "/gdc/account/profile/#{id}"
     res = Poison.decode!(Webapp.Request.get(user_url, cookies).body)
-    user = remap(res, @mapping, root: "accountSetting")
-
-    {:ok, user}
+    remap(res, @mapping, root: "accountSetting")
   end
 end
