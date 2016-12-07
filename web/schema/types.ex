@@ -1,6 +1,8 @@
 defmodule Webapp.Schema.Types do
   use Absinthe.Schema.Notation
 
+  import_types Webapp.Schema.Types.Fact
+
   @desc "Permissions"
   object :permissions do
     field :canAccessIntegration, :string
