@@ -30,6 +30,9 @@ defmodule Webapp.ObjectResolver do
     column_db_name: "content.columnDBName",
   ] ++ @mapping
 
+  @dataset [
+  ] ++ @mapping
+
   @fact [
   ] ++ @mapping
 
@@ -51,6 +54,11 @@ defmodule Webapp.ObjectResolver do
   def find_columns(%{project: id}, info) do
     res = objects_query(id, "column", info.context.cookies)
     {:ok, Enum.map(res, &(remap(&1, @column, root: "column")))}
+  end
+
+  def find_datasets(%{project: id}, info) do
+    res = objects_query(id, "dataSet", info.context.cookies)
+    {:ok, Enum.map(res, &(remap(&1, @dataset, root: "dataSet")))}
   end
 
   def find_facts(%{project: id}, info) do

@@ -27,6 +27,9 @@ defmodule Webapp.Schema.Types.Project do
     field :columns, list_of(:column), resolve: fn(_args, info) ->
       Webapp.ObjectResolver.find_columns(%{project: info.source.id}, info)
     end
+    field :datasets, list_of(:dataset), resolve: fn(_args, info) ->
+      Webapp.ObjectResolver.find_datasets(%{project: info.source.id}, info)
+    end
     field :facts, list_of(:fact), resolve: fn(_args, info) ->
       Webapp.ObjectResolver.find_facts(%{project: info.source.id}, info)
     end
