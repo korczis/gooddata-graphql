@@ -28,6 +28,11 @@ defmodule Webapp.Schema do
       resolve &Webapp.UserResolver.find/2
     end
 
+    field :attributes, list_of(:attribute) do
+      arg :project, non_null(:id)
+      resolve &Webapp.ObjectResolver.find_attributes/2
+    end
+
     field :facts, list_of(:fact) do
       arg :project, non_null(:id)
       resolve &Webapp.ObjectResolver.find_facts/2

@@ -19,8 +19,20 @@ defmodule Webapp.ObjectResolver do
     url: "meta.uri"
   ]
 
+  @attribute [
+    dimension: "content.dimension",
+    direction: "content.direction",
+    sort: "content.sort",
+    type: "content.type",
+  ] ++ @mapping
+
   @fact [
   ] ++ @mapping
+
+  def find_attributes(%{project: id}, info) do
+    res = objects_query(id, "attribute", info.context.cookies)
+    {:ok, Enum.map(res, &(remap(&1, @attribute, root: "attribute")))}
+  end
 
   def find_facts(%{project: id}, info) do
     res = objects_query(id, "fact", info.context.cookies)
