@@ -21,6 +21,9 @@ defmodule Webapp.Schema.Types.Project do
     field :roles, list_of(:role) do
       resolve &Webapp.RoleResolver.find_multiple/3
     end
+    field :facts, list_of(:fact), resolve: fn(_args, info) ->
+      Webapp.ObjectResolver.find_facts(%{project: info.source.id}, info)
+    end
     field :author, :user, resolve: fn(_args, info) ->
       Webapp.UserResolver.find(%{id: info.source.author}, info)
     end
