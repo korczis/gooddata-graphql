@@ -10,6 +10,9 @@ defmodule Webapp.Schema.Types.Column do
     field :contributor, :user, resolve: fn(_args, info) ->
       Webapp.UserResolver.find(%{id: info.source.contributor}, info)
     end
+    field :table, :table, resolve: fn(_args, info) ->
+      Webapp.ObjectResolver.find_table_by_url(%{url: info.source.table}, info)
+    end
     # Content
     # field :column_db_name, :string
     # Meta

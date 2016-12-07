@@ -11,7 +11,12 @@ defmodule Webapp.Schema.Types.Table do
       Webapp.UserResolver.find(%{id: info.source.contributor}, info)
     end
     # Content
-    field :active_data_load, :string
+    field :active_data_load, :table_data_load, resolve: fn(_args, info) ->
+      Webapp.ObjectResolver.find_table_data_load_by_url(%{url: info.source.active_data_load}, info)
+    end
+    field :table_data_loads, list_of(:table_data_load), resolve: fn(_args, info) ->
+      Webapp.ObjectResolver.find_table_data_loads_by_url(%{urls: info.source.table_data_loads}, info)
+    end
     field :table_db_name, :string
     # Meta
     field :deprecated, :string

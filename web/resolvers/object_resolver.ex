@@ -28,6 +28,7 @@ defmodule Webapp.ObjectResolver do
 
   @column [
     column_db_name: "content.columnDBName",
+    table: "content.table",
   ] ++ @mapping
 
   @data_loading_column [
@@ -53,6 +54,7 @@ defmodule Webapp.ObjectResolver do
   @table [
     active_data_load: "content.activeDataLoad",
     table_db_name: "content.tableDBName",
+    table_data_loads: "content.tableDataLoad"
   ] ++ @mapping
 
   @table_data_load [
@@ -85,6 +87,7 @@ defmodule Webapp.ObjectResolver do
     )
     {:ok, attributes}
   end
+
 
   def find_columns(%{project: id}, info) do
     res = objects_query(id, "column", info.context.cookies)
@@ -126,6 +129,27 @@ defmodule Webapp.ObjectResolver do
       end
     )
     {:ok, facts}
+  end
+
+  def find_table_by_url(%{url: url}, info) do
+    res = Poison.decode!(Webapp.Request.get(url, info.context.cookies).body)
+    {:ok, remap(res, @table, root: "table")}
+  end
+
+  def find_table_data_load_by_url(%{url: url}, info) do
+    res = Poison.decode!(Webapp.Request.get(url, info.context.cookies).body)
+    {:ok, remap(res, @table_data_load, root: "tableDataLoad")}
+  end
+
+  def find_table_data_loads_by_url(%{urls: urls}, info) do
+    table_data_loads = Parallel.map(
+      urls,
+      fn(url) ->
+        res = Poison.decode!(Webapp.Request.get(url, info.context.cookies).body)
+        remap(res, @table_data_load, root: "tableDataLoad")
+      end
+    )
+    {:ok, table_data_loads}
   end
 
   def find_table_data_loads(%{project: id}, info) do
