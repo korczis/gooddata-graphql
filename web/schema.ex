@@ -47,5 +47,10 @@ defmodule Webapp.Schema do
       arg :project, non_null(:id)
       resolve &Webapp.ObjectResolver.find_tables/2
     end
+
+    field :metrics, list_of(:metric) do
+      arg :project, non_null(:id)
+      resolve &Webapp.ObjectResolver.find_metrics/2
+    end
   end
 end
