@@ -27,6 +27,9 @@ defmodule Webapp.Schema.Types.Project do
     field :facts, list_of(:fact), resolve: fn(_args, info) ->
       Webapp.ObjectResolver.find_facts(%{project: info.source.id}, info)
     end
+    field :tables, list_of(:table), resolve: fn(_args, info) ->
+      Webapp.ObjectResolver.find_tables(%{project: info.source.id}, info)
+    end
     field :table_data_loads, list_of(:table_data_load), resolve: fn(_args, info) ->
       Webapp.ObjectResolver.find_table_data_loads(%{project: info.source.id}, info)
     end

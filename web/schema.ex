@@ -42,5 +42,10 @@ defmodule Webapp.Schema do
       arg :project, non_null(:id)
       resolve &Webapp.ObjectResolver.find_table_data_loads/2
     end
+
+    field :tables, list_of(:table) do
+      arg :project, non_null(:id)
+      resolve &Webapp.ObjectResolver.find_tables/2
+    end
   end
 end
