@@ -13,7 +13,7 @@ config :webapp, Webapp.Endpoint,
   pubsub: [name: Webapp.PubSub,
            adapter: Phoenix.PubSub.PG2],
   gooddata: [
-    host: "staging3.intgdc.com"
+    host: "lv-x.na.intgdc.com"
   ],
   httpoison: [
     hackney: [:insecure]
