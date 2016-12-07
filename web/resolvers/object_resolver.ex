@@ -50,6 +50,16 @@ defmodule Webapp.ObjectResolver do
     data_source_location: "content.dataSourceLocation"
   ] ++ @mapping
 
+  @metric [
+    folders: ["content.folders"],
+    format: "content.format",
+    expression: "content.expression"
+  ] ++ @mapping
+
+  @folder [
+    type: "content.type"
+  ] ++ @mapping
+
   def find_attributes(%{project: id}, info) do
     res = objects_query(id, "attribute", info.context.cookies)
     {:ok, Parallel.map(res, &(remap(&1, @attribute, root: "attribute")))}
@@ -108,6 +118,22 @@ defmodule Webapp.ObjectResolver do
       remap(res, @column, root: "column")
     end)
     {:ok, exprs}
+  end
+
+  def find_metrics(%{project: id}, info) do
+    res = objects_query(id, "metric", info.context.cookies)
+    {:ok, Enum.map(res, &(remap(&1, @metric, root: "metric")))}
+  end
+
+  def find_folders(%{folders: uris}, info) do
+    result = Enum.map(uris,
+      fn uri ->
+        res_j = Poison.decode!(Webapp.Request.get(uri, info.context.cookies).body())
+        res = get_in(res_j, ["folder"])
+        remap(res, @folder)
+      end
+    )
+    {:ok, result}
   end
 
   defp objects_query(project, category, cookies) do
