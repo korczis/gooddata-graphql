@@ -5,6 +5,7 @@ defmodule Webapp.Schema do
   query do
     field :projects, list_of(:project) do
       arg :owner, :string
+      arg :title, :string
       resolve &Webapp.ProjectResolver.all/2
     end
 

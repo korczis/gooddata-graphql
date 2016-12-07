@@ -31,7 +31,7 @@ defmodule Webapp.ProjectResolver do
     data = Parallel.map(
       projects,
       fn(project) ->
-        transform_project(project, args[:owner], cookies)
+        transform_project(project, args[:owner], args[:title], cookies)
       end
     )
 
@@ -44,29 +44,38 @@ defmodule Webapp.ProjectResolver do
     url = "/gdc/projects/#{id}"
     res = Poison.decode!(Webapp.Request.get(url, cookies).body)
 
-    {:ok, transform_project(res, nil, cookies)}
+    {:ok, transform_project(res, cookies)}
   end
 
 
-  defp transform_project(project, owner, cookies) do
-    res = Poison.decode!(Webapp.Request.get(get_in(project, ["project", "links", "roles"]), cookies).body)
+  defp transform_project(project, cookies) do
+    transform_project(project, nil, nil, cookies)
+  end
 
-    result = remap(project, @mapping, root: "project")
-    project_owner = result[:author]
-    case owner do
+  defp transform_project(project, owner, title, cookies) do
+    gd_project = Poison.decode!(Webapp.Request.get(get_in(project, ["project", "links", "roles"]), cookies).body)
+
+    remap(project, @mapping, root: "project")
+      |> filter_project_on_property(gd_project, owner, :author)
+      |> filter_project_on_property(gd_project, title, :title)
+  end
+
+  defp filter_project_on_property(remapped_project, gd_project, property, project_property_name) do
+    project_property = remapped_project[project_property_name]
+    case property do
       nil ->
-        roles = do_magic_with_roles(res)
-        Map.put(result, :roles, roles)
-      ^project_owner ->
-        roles = do_magic_with_roles(res)
-        Map.put(result, :roles, roles)
+        roles = do_magic_with_roles(gd_project)
+        Map.put(remapped_project, :roles, roles)
+      ^project_property ->
+        roles = do_magic_with_roles(gd_project)
+        Map.put(remapped_project, :roles, roles)
       _v -> nil
     end
   end
 
-  defp do_magic_with_roles(res) do
+  defp do_magic_with_roles(gd_project) do
     roles = Parallel.map(
-      get_in(res, ["projectRoles", "roles"]),
+      get_in(gd_project, ["projectRoles", "roles"]),
       fn(url) ->
         parts = String.split(url, "/")
         "#{Enum.fetch!(parts, 3)}/#{Enum.fetch!(parts, 5)}"
