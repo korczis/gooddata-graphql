@@ -30,9 +30,13 @@ defmodule Webapp.ObjectResolver do
     column_db_name: "content.columnDBName",
   ] ++ @mapping
 
+  @data_loading_column [
+  ] ++ @mapping
+
   @dataset [
     mode: "mode",
     attributes: "content.attributes",
+    data_loading_columns: "content.dataLoadingColumns",
     facts: "content.facts"
   ] ++ @mapping
 
@@ -69,6 +73,22 @@ defmodule Webapp.ObjectResolver do
   def find_columns(%{project: id}, info) do
     res = objects_query(id, "column", info.context.cookies)
     {:ok, Parallel.map(res, &(remap(&1, @column, root: "column")))}
+  end
+
+  def find_data_loading_columns(%{project: id}, info) do
+    res = objects_query(id, "dataLoadingColumn", info.context.cookies)
+    {:ok, Parallel.map(res, &(remap(&1, @data_loading_column, root: "dataLoadingColumn")))}
+  end
+
+  def find_list_of_data_loading_columns(%{urls: urls}, info) do
+    data_loading_columns = Parallel.map(
+      urls,
+      fn(url) ->
+        res = Poison.decode!(Webapp.Request.get(url, info.context.cookies).body)
+        remap(res, @data_loading_column, root: "dataLoadingColumn")
+      end
+    )
+    {:ok, data_loading_columns}
   end
 
   def find_datasets(%{project: id}, info) do

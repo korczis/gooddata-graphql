@@ -3,6 +3,7 @@ defmodule Webapp.Schema.Types do
 
   import_types Webapp.Schema.Types.Attribute
   import_types Webapp.Schema.Types.Column
+  import_types Webapp.Schema.Types.DataLoadingColumn
   import_types Webapp.Schema.Types.Dataset
   import_types Webapp.Schema.Types.Fact
   import_types Webapp.Schema.Types.Permissions

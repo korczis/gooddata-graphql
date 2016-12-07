@@ -15,6 +15,9 @@ defmodule Webapp.Schema.Types.Dataset do
     field :attributes, list_of(:attribute), resolve: fn(_args, info) ->
       Webapp.ObjectResolver.find_list_of_attributes(%{urls: info.source.attributes}, info)
     end
+    field :data_loading_columns, list_of(:data_loading_column), resolve: fn(_args, info) ->
+      Webapp.ObjectResolver.find_list_of_data_loading_columns(%{urls: info.source.data_loading_columns}, info)
+    end
     field :facts, list_of(:fact), resolve: fn(_args, info) ->
       Webapp.ObjectResolver.find_list_of_facts(%{urls: info.source.facts}, info)
     end
