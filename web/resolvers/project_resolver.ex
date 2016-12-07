@@ -74,7 +74,7 @@ defmodule Webapp.ProjectResolver do
   end
 
   defp do_magic_with_roles(gd_project) do
-    roles = Parallel.map(
+    Parallel.map(
       get_in(gd_project, ["projectRoles", "roles"]),
       fn(url) ->
         parts = String.split(url, "/")

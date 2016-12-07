@@ -1,7 +1,6 @@
 defmodule Webapp.Schema.Types.Fact do
   use Absinthe.Schema.Notation
 
-  import Webapp.UserResolver
   @desc "Fact"
   object :fact do
     field :author, :user, resolve: fn(_args, info) ->
