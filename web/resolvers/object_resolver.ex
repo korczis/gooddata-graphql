@@ -4,7 +4,18 @@ defmodule Webapp.ObjectResolver do
   import Webapp.Mapper, only: [uri_to_id: 0, remap: 3]
 
   @mapping [
+    author: ["meta.author", uri_to_id],
+    category: "meta.category",
+    contributor: ["meta.contributor", uri_to_id],
+    created: "meta.created",
+    deprecated: "meta.deprecated",
     id: ["meta.uri", uri_to_id],
+    identifier: "meta.identified",
+    is_production: "meta.isProduction",
+    summary: "meta.summary",
+    tags: "meta.tags",
+    title: "meta.title",
+    updated: "meta.updated",
     url: "meta.uri"
   ]
 
