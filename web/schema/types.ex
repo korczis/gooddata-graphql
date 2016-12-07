@@ -2,6 +2,7 @@ defmodule Webapp.Schema.Types do
   use Absinthe.Schema.Notation
 
   import_types Webapp.Schema.Types.Attribute
+  import_types Webapp.Schema.Types.Column
   import_types Webapp.Schema.Types.Fact
   import_types Webapp.Schema.Types.Permissions
   import_types Webapp.Schema.Types.Project
