@@ -10,6 +10,7 @@ defmodule Webapp do
     children = [
       # Start the endpoint when the application starts
       supervisor(Webapp.Endpoint, []),
+      worker(Cachex, [:rest_cache, [default_ttl: :timer.seconds(60), limit: 1000]])
       # Start your own worker by calling: Webapp.Worker.start_link(arg1, arg2, arg3)
       # worker(Webapp.Worker, [arg1, arg2, arg3]),
     ]

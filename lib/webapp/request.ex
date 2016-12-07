@@ -11,10 +11,18 @@ defmodule Webapp.Request do
   @options Application.get_env(:webapp, Webapp.Endpoint)[:httpoison]
 
   def get(url, cookies \\ %{}) do
-    Logger.info "GET #{url}"
-
-    remote_url = "https://#{@host}#{url}"
-    HTTPoison.get!(remote_url, get_headers(cookies), @options)
+    key = "GET #{url}"
+    case Cachex.get(:rest_cache, key) do
+      {:ok, result} ->
+        Logger.info "Cached #{key}"
+        result
+      _ ->
+        Logger.info key
+        remote_url = "https://#{@host}#{url}"
+        res = HTTPoison.get!(remote_url, get_headers(cookies), @options)
+        Cachex.set(:rest_cache, key, res)
+        res
+    end
   end
 
   def post(url, payload, cookies \\ %{}) do
