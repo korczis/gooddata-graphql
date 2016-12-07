@@ -14,6 +14,9 @@ defmodule Webapp.Schema.Types.Fact do
     field :exprs, list_of(:expr) do
       resolve &Webapp.ObjectResolver.get_exprs/2
     end
+    field :folders, list_of(:folder), resolve: fn(_args, info) ->
+      Webapp.ObjectResolver.find_folders(%{folders: info.source.folders || []}, info)
+    end
     field :id, :id
     field :identifier, :string
     field :is_production, :string

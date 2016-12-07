@@ -47,6 +47,7 @@ defmodule Webapp.ObjectResolver do
   ] ++ @mapping
 
   @fact [
+    folders: "content.folders",
     exprs: "content.expr"
   ] ++ @mapping
 
@@ -61,7 +62,7 @@ defmodule Webapp.ObjectResolver do
   ] ++ @mapping
 
   @metric [
-    folders: ["content.folders"],
+    folders: "content.folders",
     format: "content.format",
     expression: "content.expression"
   ] ++ @mapping
