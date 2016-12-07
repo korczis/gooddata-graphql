@@ -22,5 +22,17 @@ defmodule Webapp.Schema.Types.Folder do
       Webapp.UserResolver.find(%{id: info.source.contributor}, info)
     end
     field :type, :string
+    field :entries, list_of(:folder_entry) do
+      resolve &Webapp.ObjectResolver.fetch_folder_entries/2
+    end
+  end
+
+  union :folder_entry do
+    types [:metric, :fact]
+
+    resolve_type fn
+      %{category: "metric"}, _ -> :metric
+      %{category: "fact"}, _ -> :fact
+    end
   end
 end

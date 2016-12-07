@@ -48,6 +48,7 @@ defmodule Webapp.ObjectResolver do
   ] ++ @mapping
 
   @fact [
+    folders: "content.folders",
     exprs: "content.expr"
   ] ++ @mapping
 
@@ -63,13 +64,14 @@ defmodule Webapp.ObjectResolver do
   ] ++ @mapping
 
   @metric [
-    folders: ["content.folders"],
+    folders: "content.folders",
     format: "content.format",
     expression: "content.expression"
   ] ++ @mapping
 
   @folder [
-    type: "content.type"
+    type: "content.type",
+    entries: "content.entries"
   ] ++ @mapping
 
   def find_attributes(%{project: id}, info) do
@@ -168,6 +170,17 @@ defmodule Webapp.ObjectResolver do
       remap(res, @column, root: "column")
     end)
     {:ok, exprs}
+  end
+
+  def fetch_folder_entries(_args, info) do
+    entries = Enum.map(info.source.entries, fn(%{"link" => path, "category" => category}) ->
+        res = Poison.decode!(Webapp.Request.get(path, info.context.cookies).body)
+        case category do
+          "metric" -> remap(res, @metric, root: "metric")
+          "fact" -> remap(res, @fact, root: "fact")
+        end
+    end)
+    {:ok, entries}
   end
 
   def find_metrics(%{project: id}, info) do
