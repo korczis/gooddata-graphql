@@ -25,18 +25,8 @@ defmodule Webapp.Router do
     pipe_through :api
 
     post "/auth/signin", AuthController, :sign_in
-    post "/auth/signup", AuthController, :sign_up
-
-    get "/proxy/*path", ProxyController, :proxy
-  end
-
-  # Other scopes may use custom stacks.
-  scope "/api/v1", as: :api_v1, alias: Webapp.API.V1 do
-    pipe_through [:api]
-
-    # Testing route
-    post "/auth/renew_worker_jwt", AuthController, :renew_worker_jwt
     post "/auth/signout", AuthController, :sign_out
+    get "/proxy/*path", ProxyController, :proxy
     get  "/auth/user", AuthController, :user
   end
 
