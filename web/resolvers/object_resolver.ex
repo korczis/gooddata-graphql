@@ -1,7 +1,7 @@
 defmodule Webapp.ObjectResolver do
   require Webapp.Mapper
 
-  import Webapp.Mapper, only: [uri_to_id: 0, remap: 3]
+  import Webapp.Mapper, only: [uri_to_id: 0, remap: 3, remap: 2]
 
   @mapping [
     author: ["meta.author", uri_to_id],
@@ -31,7 +31,9 @@ defmodule Webapp.ObjectResolver do
   ] ++ @mapping
 
   @dataset [
-    mode: "mode"
+    mode: "mode",
+    attributes: "content.attributes",
+    facts: "content.facts"
   ] ++ @mapping
 
   @fact [
@@ -49,32 +51,54 @@ defmodule Webapp.ObjectResolver do
 
   def find_attributes(%{project: id}, info) do
     res = objects_query(id, "attribute", info.context.cookies)
-    {:ok, Enum.map(res, &(remap(&1, @attribute, root: "attribute")))}
+    {:ok, Parallel.map(res, &(remap(&1, @attribute, root: "attribute")))}
+  end
+
+  def find_list_of_attributes(%{urls: urls}, info) do
+    attributes = Parallel.map(
+      urls,
+      fn(url) ->
+        res = Poison.decode!(Webapp.Request.get(url, info.context.cookies).body)
+        remap(res, @attribute, root: "attribute")
+      end
+    )
+    {:ok, attributes}
   end
 
   def find_columns(%{project: id}, info) do
     res = objects_query(id, "column", info.context.cookies)
-    {:ok, Enum.map(res, &(remap(&1, @column, root: "column")))}
+    {:ok, Parallel.map(res, &(remap(&1, @column, root: "column")))}
   end
 
   def find_datasets(%{project: id}, info) do
     res = objects_query(id, "dataSet", info.context.cookies)
-    {:ok, Enum.map(res, &(remap(&1, @dataset, root: "dataSet")))}
+    {:ok, Parallel.map(res, &(remap(&1, @dataset, root: "dataSet")))}
   end
 
   def find_facts(%{project: id}, info) do
     res = objects_query(id, "fact", info.context.cookies)
-    {:ok, Enum.map(res, &(remap(&1, @fact, root: "fact")))}
+    {:ok, Parallel.map(res, &(remap(&1, @fact, root: "fact")))}
+  end
+
+  def find_list_of_facts(%{urls: urls}, info) do
+    facts = Parallel.map(
+      urls,
+      fn(url) ->
+        res = Poison.decode!(Webapp.Request.get(url, info.context.cookies).body)
+        remap(res, @fact, root: "fact")
+      end
+    )
+    {:ok, facts}
   end
 
   def find_table_data_loads(%{project: id}, info) do
     res = objects_query(id, "tableDataLoad", info.context.cookies)
-    {:ok, Enum.map(res, &(remap(&1, @table_data_load, root: "tableDataLoad")))}
+    {:ok, Parallel.map(res, &(remap(&1, @table_data_load, root: "tableDataLoad")))}
   end
 
   def find_tables(%{project: id}, info) do
     res = objects_query(id, "table", info.context.cookies)
-    {:ok, Enum.map(res, &(remap(&1, @table, root: "table")))}
+    {:ok, Parallel.map(res, &(remap(&1, @table, root: "table")))}
   end
 
   defp objects_query(project, category, cookies) do

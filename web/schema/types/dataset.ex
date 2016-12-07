@@ -12,6 +12,12 @@ defmodule Webapp.Schema.Types.Dataset do
     end
     # Content
     field :mode, :string
+    field :attributes, list_of(:attribute), resolve: fn(_args, info) ->
+      Webapp.ObjectResolver.find_list_of_attributes(%{urls: info.source.attributes}, info)
+    end
+    field :facts, list_of(:fact), resolve: fn(_args, info) ->
+      Webapp.ObjectResolver.find_list_of_facts(%{urls: info.source.facts}, info)
+    end
     # Meta
     field :deprecated, :string
     field :id, :id
