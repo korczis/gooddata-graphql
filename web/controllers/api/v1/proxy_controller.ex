@@ -4,7 +4,11 @@ defmodule Webapp.API.V1.ProxyController do
   require Logger
 
   def proxy(conn, params) do
-    url = "/#{Enum.join(params["path"], "/")}"
+    pars = Map.delete(params, "path")
+    url = case Enum.count(pars) do
+      0 -> "/#{Enum.join(params["path"], "/")}"
+      _ -> "/#{Enum.join(params["path"], "/")}?#{URI.encode_query(pars)}"
+    end
 
     res = Webapp.Request.get(url, conn.cookies)
 
