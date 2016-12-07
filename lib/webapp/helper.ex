@@ -12,7 +12,7 @@ defmodule Webapp.Helper do
       nil ->
         conn
       _ ->
-        case (tt_timestamp - String.to_integer(last_timestamp)) > 60 do
+        case (tt_timestamp - String.to_integer(last_timestamp)) > 10 * 60 do
           true ->
             Logger.info "TT refresh needed"
             res = Webapp.Request.get("/gdc/account/token", conn.cookies)

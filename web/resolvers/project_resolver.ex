@@ -17,7 +17,7 @@ defmodule Webapp.ProjectResolver do
     author: ["meta.author", uri_to_id],
     contributor: ["meta.contributor", uri_to_id],
     guided_navigation: "content.guidedNavigation",
-    is_public: "content.isPublic",
+    is_public: "content.isPublic,"
   ]
 
   def all(args, info) do

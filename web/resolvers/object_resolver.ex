@@ -29,6 +29,11 @@ defmodule Webapp.ObjectResolver do
   @fact [
   ] ++ @mapping
 
+  @table_data_load [
+    type_of_load: "content.typeOfLoad",
+    data_source_location: "content.dataSourceLocation"
+  ] ++ @mapping
+
   def find_attributes(%{project: id}, info) do
     res = objects_query(id, "attribute", info.context.cookies)
     {:ok, Enum.map(res, &(remap(&1, @attribute, root: "attribute")))}
@@ -37,6 +42,11 @@ defmodule Webapp.ObjectResolver do
   def find_facts(%{project: id}, info) do
     res = objects_query(id, "fact", info.context.cookies)
     {:ok, Enum.map(res, &(remap(&1, @fact, root: "fact")))}
+  end
+
+  def find_table_data_loads(%{project: id}, info) do
+    res = objects_query(id, "tableDataLoad", info.context.cookies)
+    {:ok, Enum.map(res, &(remap(&1, @table_data_load, root: "tableDataLoad")))}
   end
 
   defp objects_query(project, category, cookies) do
