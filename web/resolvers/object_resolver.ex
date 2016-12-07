@@ -10,7 +10,7 @@ defmodule Webapp.ObjectResolver do
     created: "meta.created",
     deprecated: "meta.deprecated",
     id: ["meta.uri", uri_to_id],
-    identifier: "meta.identified",
+    identifier: "meta.identifier",
     is_production: "meta.isProduction",
     summary: "meta.summary",
     tags: "meta.tags",
@@ -37,6 +37,7 @@ defmodule Webapp.ObjectResolver do
   ] ++ @mapping
 
   @fact [
+    exprs: "content.expr"
   ] ++ @mapping
 
   @table [
@@ -99,6 +100,14 @@ defmodule Webapp.ObjectResolver do
   def find_tables(%{project: id}, info) do
     res = objects_query(id, "table", info.context.cookies)
     {:ok, Parallel.map(res, &(remap(&1, @table, root: "table")))}
+  end
+
+  def get_exprs(_args, info) do
+    exprs = Enum.map(info.source.exprs, fn(%{"data" => path, "type" => type}) ->
+      res = Poison.decode!(Webapp.Request.get(path, info.context.cookies).body)
+      remap(res, @column, root: "column")
+    end)
+    {:ok, exprs}
   end
 
   defp objects_query(project, category, cookies) do
