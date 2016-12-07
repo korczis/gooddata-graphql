@@ -87,6 +87,8 @@ defmodule Webapp.Schema.Types do
       field :cluster, :string
       field :driver, :string
       field :environment, :string
+      field :guided_navigation, :string
+      field :is_public, :string
       field :state, :string
       # Meta
       field :summary, :string
@@ -98,17 +100,11 @@ defmodule Webapp.Schema.Types do
         resolve &Webapp.RoleResolver.find_multiple/3
       end
       field :author, :user, resolve: fn(_args, info) ->
-        source = Map.get(info, :source)
-        author = Map.get(source, :author)
-        id = List.last(String.split(author, "/"))
-        Webapp.UserResolver.find(%{id: id}, info)
+        Webapp.UserResolver.find(%{id: info.source.author}, info)
       end
       field :contributor, :user, resolve: fn(_args, info) ->
-        source = Map.get(info, :source)
-        author = Map.get(source, :author)
-        id = List.last(String.split(author, "/"))
-        Webapp.UserResolver.find(%{id: id}, info)
-     end
+        Webapp.UserResolver.find(%{id: info.source.contributor}, info)
+      end
     end
 
     @desc "Role"
@@ -121,16 +117,10 @@ defmodule Webapp.Schema.Types do
       field :created, :string
       field :updated, :string
       field :author, :user, resolve: fn(_args, info) ->
-        source = Map.get(info, :source)
-        author = Map.get(source, :author)
-        id = List.last(String.split(author, "/"))
-        Webapp.UserResolver.find(%{id: id}, info)
+        Webapp.UserResolver.find(%{id: info.source.author}, info)
       end
       field :contributor, :user, resolve: fn(_args, info) ->
-        source = Map.get(info, :source)
-        author = Map.get(source, :contributor)
-        id = List.last(String.split(author, "/"))
-        Webapp.UserResolver.find(%{id: id}, info)
+        Webapp.UserResolver.find(%{id: info.source.contributor}, info)
       end
       field :users, list_of(:user), resolve: fn(_args, info) ->
         source = Map.fetch!(info, :source)
