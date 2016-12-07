@@ -1,7 +1,7 @@
 defmodule Webapp.RoleResolver do
   require Webapp.Mapper
 
-  import Webapp.Mapper, only: [remap: 3]
+  import Webapp.Mapper, only: [remap: 3, uri_to_id: 0]
 
   @mapping [
     id: ["links.roleUsers", &Webapp.RoleResolver.to_id/1],
@@ -9,8 +9,8 @@ defmodule Webapp.RoleResolver do
     title: "meta.title",
     summary: "meta.summary",
     url: "links.self",
-    author: "meta.author",
-    contributor: "meta.contributor",
+    author: ["meta.author", uri_to_id],
+    contributor: ["meta.contributor", uri_to_id],
     created: "meta.created",
     updated: "meta.updated"
   ]
