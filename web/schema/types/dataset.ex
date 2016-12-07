@@ -11,7 +11,7 @@ defmodule Webapp.Schema.Types.Dataset do
       Webapp.UserResolver.find(%{id: info.source.contributor}, info)
     end
     # Content
-    # field :column_db_name, :string
+    field :mode, :string
     # Meta
     field :deprecated, :string
     field :id, :id

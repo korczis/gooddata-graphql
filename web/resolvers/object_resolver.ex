@@ -31,6 +31,7 @@ defmodule Webapp.ObjectResolver do
   ] ++ @mapping
 
   @dataset [
+    mode: "mode"
   ] ++ @mapping
 
   @fact [
