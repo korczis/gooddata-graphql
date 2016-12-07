@@ -13,6 +13,7 @@ defmodule Webapp.Schema.Types.Column do
     # Content
     field :column_db_name, :string
     # Meta
+    field :category, :string
     field :deprecated, :string
     field :id, :id
     field :identifier, :string
