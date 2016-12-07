@@ -1,8 +1,8 @@
-defmodule Webapp.Schema.Types.Column do
+defmodule Webapp.Schema.Types.DataLoadingColumn do
   use Absinthe.Schema.Notation
 
-  @desc "Column"
-  object :column do
+  @desc "Data Loading Column"
+  object :data_loading_column do
     field :author, :user, resolve: fn(_args, info) ->
       Webapp.UserResolver.find(%{id: info.source.author}, info)
     end
@@ -11,7 +11,12 @@ defmodule Webapp.Schema.Types.Column do
       Webapp.UserResolver.find(%{id: info.source.contributor}, info)
     end
     # Content
-    field :column_db_name, :string
+    field :column_name, :string
+    field :column_unique, :integer
+    field :column_precision, :integer
+    field :column_null, :integer
+    field :column_type, :string
+    field :column_length, :integer
     # Meta
     field :category, :string
     field :deprecated, :string

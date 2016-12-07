@@ -31,6 +31,12 @@ defmodule Webapp.ObjectResolver do
   ] ++ @mapping
 
   @data_loading_column [
+    column_name: "content.columnName",
+    column_unique: "content.columnUnique",
+    column_precision: "content.columnPrecision",
+    column_null: "content.columnNull",
+    column_type: "content.columnType",
+    column_length: "content.columnLength",
   ] ++ @mapping
 
   @dataset [
