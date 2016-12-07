@@ -44,9 +44,22 @@ defmodule Webapp.ProjectResolver do
     url = "/gdc/projects/#{id}"
     res = Poison.decode!(Webapp.Request.get(url, cookies).body)
 
+    # IO.inspect(export_report_definition("/gdc/md/GoodSalesDemo/obj/75536", cookies))
+
     {:ok, transform_project(res, cookies)}
   end
 
+  defp export_report_definition(uri, cookies) do
+    project = Enum.at(String.split(uri, "/"), 3)
+    path = "/gdc/app/projects/#{project}/execute/raw/"
+    payload = %{
+      report_req: %{
+        reportDefinition: uri
+      }
+    }
+    res = Poison.decode!(Webapp.Request.post(path, payload, cookies).body)
+    Webapp.Request.get(Map.get(res, "uri"), cookies).body
+  end
 
   defp transform_project(project, cookies) do
     transform_project(project, nil, nil, cookies)
