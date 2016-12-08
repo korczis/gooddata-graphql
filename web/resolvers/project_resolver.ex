@@ -31,7 +31,7 @@ defmodule Webapp.ProjectResolver do
     data = Parallel.map(
       projects,
       fn(project) ->
-        transform_project(project, args[:owner], args[:title], cookies)
+        transform_project(project, args[:owner], args[:title], args[:driver], cookies)
       end
     )
 
@@ -48,15 +48,16 @@ defmodule Webapp.ProjectResolver do
   end
 
   defp transform_project(project, cookies) do
-    transform_project(project, nil, nil, cookies)
+    transform_project(project, nil, nil, nil, cookies)
   end
 
-  defp transform_project(project, owner, title, cookies) do
+  defp transform_project(project, owner, title, driver, cookies) do
     gd_project = Poison.decode!(Webapp.Request.get(get_in(project, ["project", "links", "roles"]), cookies).body)
 
     remap(project, @mapping, root: "project")
       |> filter_project_on_property(gd_project, owner, :author)
       |> filter_project_on_property(gd_project, title, :title)
+      |> filter_project_on_property(gd_project, driver, :driver)
   end
 
   defp filter_project_on_property(remapped_project, gd_project, property, project_property_name) do
