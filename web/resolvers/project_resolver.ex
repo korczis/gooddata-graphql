@@ -60,6 +60,10 @@ defmodule Webapp.ProjectResolver do
       |> filter_project_on_property(gd_project, driver, :driver)
   end
 
+  defp filter_project_on_property(nil, _, _, _) do
+    nil
+  end
+
   defp filter_project_on_property(remapped_project, gd_project, property, project_property_name) do
     project_property = remapped_project[project_property_name]
     case property do
