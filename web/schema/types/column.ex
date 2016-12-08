@@ -26,5 +26,6 @@ defmodule Webapp.Schema.Types.Column do
     field :title, :string
     field :updated, :string
     field :url, :string
+    interface :meta
   end
 end

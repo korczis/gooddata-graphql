@@ -25,6 +25,8 @@ defmodule Webapp.Schema.Types.Fact do
     field :title, :string
     field :updated, :string
     field :url, :string
+    field :category, :string
+    interface :meta
   end
 
   union :expr do

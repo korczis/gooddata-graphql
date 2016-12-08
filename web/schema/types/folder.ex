@@ -8,6 +8,8 @@ defmodule Webapp.Schema.Types.Folder do
     field :author, :user, resolve: fn(_args, info) ->
       Webapp.UserResolver.find(%{id: info.source.author}, info)
     end
+    field :id, :id
+    field :url, :string
     field :tags, :string
     field :created, :string
     field :identifier, :string
@@ -25,6 +27,7 @@ defmodule Webapp.Schema.Types.Folder do
     field :entries, list_of(:folder_entry) do
       resolve &Webapp.ObjectResolver.fetch_folder_entries/2
     end
+    interface :meta
   end
 
   union :folder_entry do

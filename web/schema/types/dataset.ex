@@ -30,6 +30,8 @@ defmodule Webapp.Schema.Types.Dataset do
     field :tags, :string
     field :title, :string
     field :updated, :string
+    field :category, :string
     field :url, :string
+    interface :meta
   end
 end
