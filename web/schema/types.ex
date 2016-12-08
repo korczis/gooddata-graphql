@@ -10,6 +10,7 @@ defmodule Webapp.Schema.Types do
   import_types Webapp.Schema.Types.Folder
   import_types Webapp.Schema.Types.Permissions
   import_types Webapp.Schema.Types.Project
+  import_types Webapp.Schema.Types.Report
   import_types Webapp.Schema.Types.Role
   import_types Webapp.Schema.Types.Table
   import_types Webapp.Schema.Types.TableDataLoad
