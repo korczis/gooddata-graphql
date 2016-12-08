@@ -52,5 +52,8 @@ defmodule Webapp.Schema.Types.Project do
       arg :id, non_null(:id)
       resolve &Webapp.ObjectResolver.find_report/2
     end
+    field :reports, list_of(:report) do
+      resolve &Webapp.ObjectResolver.find_reports/2
+    end
   end
 end
