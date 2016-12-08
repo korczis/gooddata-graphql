@@ -207,21 +207,24 @@ defmodule Webapp.ObjectResolver do
     uri = "/gdc/md/#{info.source.id}/obj/#{id}"
     res = Poison.decode!(Webapp.Request.get(uri, info.context.cookies).body())
     report = remap(res, @report, root: "report")
-    IO.inspect(res)
     {:ok, report}
   end
 
-  def get_report_data(_arg, info) do
-    uri = List.last(info.source.definitions)
-    {:ok, export_report_definition(uri, info.context.cookies)}
+  def find_reports(_arg, info) do
+    res = objects_query(info.source.id, "report", info.context.cookies)
+    {:ok, Enum.map(res, &(remap(&1, @report, root: "report")))}
   end
 
-  defp export_report_definition(uri, cookies) do
+  def get_report_data(_arg, info) do
+    {:ok, export_report(info.source.url, info.context.cookies)}
+  end
+
+  defp export_report(uri, cookies) do
     project = Enum.at(String.split(uri, "/"), 3)
     path = "/gdc/app/projects/#{project}/execute/raw/"
     payload = %{
       report_req: %{
-        reportDefinition: uri
+        report: uri
       }
     }
     res = Poison.decode!(Webapp.Request.post(path, payload, cookies).body)
