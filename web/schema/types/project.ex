@@ -21,26 +21,38 @@ defmodule Webapp.Schema.Types.Project do
     field :roles, list_of(:role) do
       resolve &Webapp.RoleResolver.find_multiple/3
     end
-    field :attributes, list_of(:attribute), resolve: fn(_args, info) ->
-      Webapp.ObjectResolver.find_attributes(%{project: info.source.id}, info)
+    field :attributes, list_of(:attribute) do
+      arg :title, :string
+      arg :identifier, :string
+      resolve &Webapp.ObjectResolver.find_attributes/2
     end
-    field :columns, list_of(:column), resolve: fn(_args, info) ->
-      Webapp.ObjectResolver.find_columns(%{project: info.source.id}, info)
+    field :columns, list_of(:column) do
+      arg :title, :string
+      arg :identifier, :string
+      resolve &Webapp.ObjectResolver.find_columns/2
     end
-    field :data_loading_columns, list_of(:data_loading_column), resolve: fn(_args, info) ->
-      Webapp.ObjectResolver.find_data_loading_columns(%{project: info.source.id}, info)
+    field :data_loading_columns, list_of(:data_loading_column) do
+      arg :title, :string
+      arg :identifier, :string
+      resolve &Webapp.ObjectResolver.find_data_loading_columns/2
     end
-    field :datasets, list_of(:dataset), resolve: fn(_args, info) ->
-      Webapp.ObjectResolver.find_datasets(%{project: info.source.id}, info)
+    field :datasets, list_of(:dataset) do
+      arg :title, :string
+      arg :identifier, :string
+      resolve &Webapp.ObjectResolver.find_datasets/2
     end
     field :facts, list_of(:fact), resolve: fn(_args, info) ->
       Webapp.ObjectResolver.find_facts(%{project: info.source.id}, info)
     end
-    field :tables, list_of(:table), resolve: fn(_args, info) ->
-      Webapp.ObjectResolver.find_tables(%{project: info.source.id}, info)
+    field :tables, list_of(:table) do
+      arg :title, :string
+      arg :identifier, :string
+      resolve &Webapp.ObjectResolver.find_tables/2
     end
-    field :table_data_loads, list_of(:table_data_load), resolve: fn(_args, info) ->
-      Webapp.ObjectResolver.find_table_data_loads(%{project: info.source.id}, info)
+    field :table_data_loads, list_of(:table_data_load) do
+      arg :title, :string
+      arg :identifier, :string
+      resolve &Webapp.ObjectResolver.find_table_data_loads/2
     end
     field :author, :user, resolve: fn(_args, info) ->
       Webapp.UserResolver.find(%{id: info.source.author}, info)
