@@ -83,6 +83,14 @@ defmodule Webapp.ObjectResolver do
     {:ok, Parallel.map(res, &(remap(&1, @attribute, root: "attribute")))}
   end
 
+  def find_attributes(args, info) do
+    res = objects_query(info.source.id, "attribute", info.context.cookies)
+    {:ok,
+      Parallel.map(res, &(remap(&1, @attribute, root: "attribute")))
+        |> filter_objects_by_criteria(args[:title], args[:identifier])
+    }
+  end
+
   def find_list_of_attributes(%{urls: urls}, info) do
     attributes = Parallel.map(
       urls,
@@ -95,14 +103,20 @@ defmodule Webapp.ObjectResolver do
   end
 
 
-  def find_columns(%{project: id}, info) do
-    res = objects_query(id, "column", info.context.cookies)
-    {:ok, Parallel.map(res, &(remap(&1, @column, root: "column")))}
+  def find_columns(args, info) do
+    res = objects_query(info.source.id, "column", info.context.cookies)
+    {:ok,
+      Parallel.map(res, &(remap(&1, @column, root: "column")))
+        |> filter_objects_by_criteria(args[:title], args[:identifier])
+    }
   end
 
-  def find_data_loading_columns(%{project: id}, info) do
-    res = objects_query(id, "dataLoadingColumn", info.context.cookies)
-    {:ok, Parallel.map(res, &(remap(&1, @data_loading_column, root: "dataLoadingColumn")))}
+  def find_data_loading_columns(args, info) do
+    res = objects_query(info.source.id, "dataLoadingColumn", info.context.cookies)
+    {:ok,
+      Parallel.map(res, &(remap(&1, @data_loading_column, root: "dataLoadingColumn")))
+        |> filter_objects_by_criteria(args[:title], args[:identifier])
+    }
   end
 
   def find_list_of_data_loading_columns(%{urls: urls}, info) do
@@ -116,14 +130,20 @@ defmodule Webapp.ObjectResolver do
     {:ok, data_loading_columns}
   end
 
-  def find_datasets(%{project: id}, info) do
-    res = objects_query(id, "dataSet", info.context.cookies)
-    {:ok, Parallel.map(res, &(remap(&1, @dataset, root: "dataSet")))}
+  def find_datasets(args, info) do
+    res = objects_query(info.source.id, "dataSet", info.context.cookies)
+    {:ok,
+      Parallel.map(res, &(remap(&1, @dataset, root: "dataSet")))
+        |> filter_objects_by_criteria(args[:title], args[:identifier])
+    }
   end
 
-  def find_facts(%{project: id}, info) do
-    res = objects_query(id, "fact", info.context.cookies)
-    {:ok, Parallel.map(res, &(remap(&1, @fact, root: "fact")))}
+  def find_facts(args, info) do
+    res = objects_query(info.source.id, "fact", info.context.cookies)
+    {:ok,
+      Parallel.map(res, &(remap(&1, @fact, root: "fact")))
+        |> filter_objects_by_criteria(args[:title], args[:identifier])
+    }
   end
 
   def find_list_of_facts(%{urls: urls}, info) do
@@ -158,14 +178,20 @@ defmodule Webapp.ObjectResolver do
     {:ok, table_data_loads}
   end
 
-  def find_table_data_loads(%{project: id}, info) do
-    res = objects_query(id, "tableDataLoad", info.context.cookies)
-    {:ok, Parallel.map(res, &(remap(&1, @table_data_load, root: "tableDataLoad")))}
+  def find_table_data_loads(args, info) do
+    res = objects_query(info.source.id, "tableDataLoad", info.context.cookies)
+    {:ok,
+      Parallel.map(res, &(remap(&1, @table_data_load, root: "tableDataLoad")))
+        |> filter_objects_by_criteria(args[:title], args[:identifier])
+    }
   end
 
-  def find_tables(%{project: id}, info) do
-    res = objects_query(id, "table", info.context.cookies)
-    {:ok, Parallel.map(res, &(remap(&1, @table, root: "table")))}
+  def find_tables(args, info) do
+    res = objects_query(info.source.id, "table", info.context.cookies)
+    {:ok,
+      Parallel.map(res, &(remap(&1, @table, root: "table")))
+        |> filter_objects_by_criteria(args[:title], args[:identifier])
+    }
   end
 
   def get_exprs(_args, info) do
@@ -229,6 +255,27 @@ defmodule Webapp.ObjectResolver do
     }
     res = Poison.decode!(Webapp.Request.post(path, payload, cookies).body)
     Webapp.Request.get(Map.get(res, "uri"), cookies).body
+  end
+
+  defp filter_objects_by_criteria(list, title \\ nil, identifier \\ nil) do
+    filter_by_title(list, title)
+      |> filter_by_identifier(identifier)
+  end
+
+  defp filter_by_title(list, nil) do
+    list
+  end
+  defp filter_by_title(list, title) do
+    r = Regex.compile!(title)
+    Enum.filter(list, fn md_obj -> Regex.match?(r, md_obj[:title]) end)
+  end
+
+  defp filter_by_identifier(list, nil) do
+    list
+  end
+  defp filter_by_identifier(list, identifier) do
+    r = Regex.compile!(identifier)
+    Enum.filter(list, fn md_obj -> Regex.match?(r, md_obj[:identifier]) end)
   end
 
   defp objects_query(project, category, cookies) do
