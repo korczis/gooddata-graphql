@@ -26,6 +26,18 @@ defmodule Webapp.ObjectResolver do
     type: "content.type",
   ] ++ @mapping
 
+  @attribute_display_form [
+  ] ++ @mapping
+
+  @report_definition [
+  ] ++ @mapping
+
+  @project_dashboard [
+  ] ++ @mapping
+
+  @domain [
+  ] ++ @mapping
+
   @column [
     column_db_name: "content.columnDBName",
     table: "content.table",
@@ -243,6 +255,30 @@ defmodule Webapp.ObjectResolver do
 
   def get_report_data(_arg, info) do
     {:ok, export_report(info.source.url, info.context.cookies)}
+  end
+
+  def find_used_by(arg, info) do
+    project = Enum.at(String.split(info.source.url, "/"), 3)
+    path = "/gdc/md/#{project}/usedby2/#{info.source.id}"
+    res = Poison.decode!(Webapp.Request.get(path, info.context.cookies).body)
+    links = Enum.map(Map.get(res, "entries"), fn(x) -> {Map.get(x, "category"), Map.get(x, "link")} end)
+    objects = Enum.map(links, fn({c, uri}) -> {c, Poison.decode!(Webapp.Request.get(uri, info.context.cookies).body())} end)
+    {:ok, Enum.map(objects, &remap_object/1)}
+  end
+
+  defp remap_object({c, o}) do
+    case c do
+      "metric" -> remap(o, @metric, root: "metric")
+      "fact" -> remap(o, @fact, root: "fact")
+      "column" -> remap(o, @column, root: "column")
+      "attribute" -> remap(o, @attribute, root: "attribute")
+      "dataSet" -> remap(o, @dataset, root: "dataSet")
+      "attributeDisplayForm" -> remap(o, @attribute_display_form, root: "attributeDisplayForm")
+      "reportDefinition" -> remap(o, @report_definition, root: "reportDefinition")
+      "projectDashboard" -> remap(o, @project_dashboard, root: "projectDashboard")
+      "domain" -> remap(o, @domain, root: "domain")
+      "report" -> remap(o, @domain, root: "report")
+    end
   end
 
   defp export_report(uri, cookies) do
