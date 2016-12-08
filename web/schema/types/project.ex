@@ -48,5 +48,9 @@ defmodule Webapp.Schema.Types.Project do
     field :contributor, :user, resolve: fn(_args, info) ->
       Webapp.UserResolver.find(%{id: info.source.contributor}, info)
     end
+    field :report, :report do
+      arg :id, non_null(:id)
+      resolve &Webapp.ObjectResolver.find_report/2
+    end
   end
 end
