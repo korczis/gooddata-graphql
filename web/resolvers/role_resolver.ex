@@ -34,7 +34,7 @@ defmodule Webapp.RoleResolver do
     {:ok, role}
   end
 
-  def find_multiple(parent, _args, info) do
+  def find_multiple(parent, args, info) do
     cookies = info.context.cookies
 
     roles = Parallel.map(
@@ -46,7 +46,11 @@ defmodule Webapp.RoleResolver do
       end
     )
 
-     {:ok, roles}
+    roles = case Map.get(args, :identifier) do
+      nil -> roles
+      identifier -> Enum.filter(roles, fn(r) -> r.identifier == identifier end)
+    end
+    {:ok, roles}
   end
 
   defp get_role(role_id, cookies) do

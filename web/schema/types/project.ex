@@ -19,6 +19,7 @@ defmodule Webapp.Schema.Types.Project do
     field :updated, :string
     # Other
     field :roles, list_of(:role) do
+      arg :identifier, :string
       resolve &Webapp.RoleResolver.find_multiple/3
     end
     field :attributes, list_of(:attribute) do
