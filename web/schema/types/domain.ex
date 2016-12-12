@@ -1,24 +1,19 @@
-defmodule Webapp.Schema.Types.Metric do
+defmodule Webapp.Schema.Types.Domain do
   use Absinthe.Schema.Notation
 
-  @desc "Metric"
-  object :metric do
-    field :format, :string
-    field :expression, :string
-    field :folders, list_of(:folder), resolve: fn(_args, info) ->
-      Webapp.ObjectResolver.find_folders(%{folders: info.source.folders || []}, info)
-    end
+  object :domain do
     field :title, :string
     field :identifier, :string
     field :id, :id
     field :url, :string
     field :category, :string
+    interface :meta
+
     field :author, :user, resolve: fn(_args, info) ->
       Webapp.UserResolver.find(%{id: info.source.author}, info)
     end
     field :contributor, :user, resolve: fn(_args, info) ->
       Webapp.UserResolver.find(%{id: info.source.contributor}, info)
     end
-    interface :meta
   end
 end
