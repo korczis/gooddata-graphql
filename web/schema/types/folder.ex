@@ -27,6 +27,12 @@ defmodule Webapp.Schema.Types.Folder do
     field :entries, list_of(:folder_entry) do
       resolve &Webapp.ObjectResolver.fetch_folder_entries/2
     end
+    field :used_by, list_of(:meta) do
+      resolve &Webapp.ObjectResolver.find_used_by/2
+    end
+    field :using, list_of(:meta) do
+      resolve &Webapp.ObjectResolver.find_using/2
+    end
     interface :meta
   end
 

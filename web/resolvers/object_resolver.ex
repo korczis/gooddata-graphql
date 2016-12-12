@@ -35,6 +35,9 @@ defmodule Webapp.ObjectResolver do
   @project_dashboard [
   ] ++ @mapping
 
+  @dimension [
+  ] ++ @mapping
+
   @domain [
   ] ++ @mapping
 
@@ -57,6 +60,9 @@ defmodule Webapp.ObjectResolver do
     attributes: "content.attributes",
     data_loading_columns: "content.dataLoadingColumns",
     facts: "content.facts"
+  ] ++ @mapping
+
+  @execution_context [
   ] ++ @mapping
 
   @fact [
@@ -88,6 +94,12 @@ defmodule Webapp.ObjectResolver do
 
   @report [
     definitions: "content.definitions"
+  ] ++ @mapping
+
+  @scheduled_mail [
+  ] ++ @mapping
+
+  @visualization [
   ] ++ @mapping
 
   def find_attributes(%{project: id}, info) do
@@ -261,23 +273,39 @@ defmodule Webapp.ObjectResolver do
     project = Enum.at(String.split(info.source.url, "/"), 3)
     path = "/gdc/md/#{project}/usedby2/#{info.source.id}"
     res = Poison.decode!(Webapp.Request.get(path, info.context.cookies).body)
-    links = Enum.map(Map.get(res, "entries"), fn(x) -> {Map.get(x, "category"), Map.get(x, "link")} end)
-    objects = Enum.map(links, fn({c, uri}) -> {c, Poison.decode!(Webapp.Request.get(uri, info.context.cookies).body())} end)
-    {:ok, Enum.map(objects, &remap_object/1)}
+    links = Parallel.map(Map.get(res, "entries"), fn(x) -> {Map.get(x, "category"), Map.get(x, "link")} end)
+    objects = Parallel.map(links, fn({c, uri}) -> {c, Poison.decode!(Webapp.Request.get(uri, info.context.cookies).body())} end)
+    {:ok, Parallel.map(objects, &remap_object/1)}
+  end
+
+  def find_using(arg, info) do
+    project = Enum.at(String.split(info.source.url, "/"), 3)
+    path = "/gdc/md/#{project}/using2/#{info.source.id}"
+    res = Poison.decode!(Webapp.Request.get(path, info.context.cookies).body)
+    links = Parallel.map(Map.get(res, "entries"), fn(x) -> {Map.get(x, "category"), Map.get(x, "link")} end)
+    objects = Parallel.map(links, fn({c, uri}) -> {c, Poison.decode!(Webapp.Request.get(uri, info.context.cookies).body())} end)
+    {:ok, Parallel.map(objects, &remap_object/1)}
   end
 
   defp remap_object({c, o}) do
     case c do
-      "metric" -> remap(o, @metric, root: "metric")
-      "fact" -> remap(o, @fact, root: "fact")
-      "column" -> remap(o, @column, root: "column")
       "attribute" -> remap(o, @attribute, root: "attribute")
-      "dataSet" -> remap(o, @dataset, root: "dataSet")
       "attributeDisplayForm" -> remap(o, @attribute_display_form, root: "attributeDisplayForm")
-      "reportDefinition" -> remap(o, @report_definition, root: "reportDefinition")
-      "projectDashboard" -> remap(o, @project_dashboard, root: "projectDashboard")
+      "column" -> remap(o, @column, root: "column")
+      "dataSet" -> remap(o, @dataset, root: "dataSet")
+      "dimension" -> remap(o, @dimension, root: "dimension")
       "domain" -> remap(o, @domain, root: "domain")
+      "executionContext" -> remap(o, @execution_context, root: "executionContext")
+      "fact" -> remap(o, @fact, root: "fact")
+      "folder" -> remap(o, @folder, root: "folder")
+      "metric" -> remap(o, @metric, root: "metric")
+      "projectDashboard" -> remap(o, @project_dashboard, root: "projectDashboard")
       "report" -> remap(o, @domain, root: "report")
+      "reportDefinition" -> remap(o, @report_definition, root: "reportDefinition")
+      "scheduledMail" -> remap(o, @scheduled_mail, root: "scheduledMail")
+      "table" -> remap(o, @table, root: "table")
+      "tableDataLoad" -> remap(o, @table_data_load, root: "table_data_load")
+      "visualization" -> remap(o, @visualization, root: "visualization")
     end
   end
 

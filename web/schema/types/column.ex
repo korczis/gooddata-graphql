@@ -10,6 +10,12 @@ defmodule Webapp.Schema.Types.Column do
     field :contributor, :user, resolve: fn(_args, info) ->
       Webapp.UserResolver.find(%{id: info.source.contributor}, info)
     end
+    field :used_by, list_of(:meta) do
+      resolve &Webapp.ObjectResolver.find_used_by/2
+    end
+    field :using, list_of(:meta) do
+      resolve &Webapp.ObjectResolver.find_using/2
+    end
     field :table, :table, resolve: fn(_args, info) ->
       Webapp.ObjectResolver.find_table_by_url(%{url: info.source.table}, info)
     end

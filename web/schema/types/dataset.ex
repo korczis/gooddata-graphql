@@ -10,6 +10,12 @@ defmodule Webapp.Schema.Types.Dataset do
     field :contributor, :user, resolve: fn(_args, info) ->
       Webapp.UserResolver.find(%{id: info.source.contributor}, info)
     end
+    field :used_by, list_of(:meta) do
+      resolve &Webapp.ObjectResolver.find_used_by/2
+    end
+    field :using, list_of(:meta) do
+      resolve &Webapp.ObjectResolver.find_using/2
+    end
     # Content
     field :mode, :string
     field :attributes, list_of(:attribute), resolve: fn(_args, info) ->

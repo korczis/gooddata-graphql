@@ -1,10 +1,8 @@
-defmodule Webapp.Schema.Types.Metric do
+defmodule Webapp.Schema.Types.ScheduledMail do
   use Absinthe.Schema.Notation
 
-  @desc "Metric"
-  object :metric do
-    field :format, :string
-    field :expression, :string
+  @desc "Scheduled Mail"
+  object :scheduled_mail do
     field :folders, list_of(:folder), resolve: fn(_args, info) ->
       Webapp.ObjectResolver.find_folders(%{folders: info.source.folders || []}, info)
     end
