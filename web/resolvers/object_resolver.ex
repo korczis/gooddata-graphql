@@ -234,7 +234,7 @@ defmodule Webapp.ObjectResolver do
   end
 
   def get_exprs(_args, info) do
-    exprs = Enum.map(info.source.exprs, fn(%{"data" => path, "type" => type}) ->
+    exprs = Parallel.map(info.source.exprs, fn(%{"data" => path, "type" => type}) ->
       res = Poison.decode!(Webapp.Request.get(path, info.context.cookies).body)
       remap(res, @column, root: "column")
     end)
@@ -242,7 +242,7 @@ defmodule Webapp.ObjectResolver do
   end
 
   def fetch_folder_entries(_args, info) do
-    entries = Enum.map(info.source.entries, fn(%{"link" => path, "category" => category}) ->
+    entries = Parallel.map(info.source.entries, fn(%{"link" => path, "category" => category}) ->
         res = Poison.decode!(Webapp.Request.get(path, info.context.cookies).body)
         case category do
           "metric" -> remap(res, @metric, root: "metric")
@@ -254,11 +254,11 @@ defmodule Webapp.ObjectResolver do
 
   def find_metrics(%{project: id}, info) do
     res = objects_query(id, "metric", info.context.cookies)
-    {:ok, Enum.map(res, &(remap(&1, @metric, root: "metric")))}
+    {:ok, Parallel.map(res, &(remap(&1, @metric, root: "metric")))}
   end
 
   def find_folders(%{folders: uris}, info) do
-    result = Enum.map(uris,
+    result = Parallel.map(uris,
       fn uri ->
         res_j = Poison.decode!(Webapp.Request.get(uri, info.context.cookies).body())
         res = get_in(res_j, ["folder"])
@@ -332,11 +332,10 @@ defmodule Webapp.ObjectResolver do
           end
         )
 
-        objects = Enum.map(
+        objects = Parallel.map(
           links,
           fn({c, uri}) ->
             res = Poison.decode!(Webapp.Request.get(uri, info.context.cookies).body())
-            IO.inspect(Map.keys(res))
             {c, res}
           end
         )
