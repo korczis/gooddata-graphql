@@ -126,7 +126,6 @@ defmodule Webapp.ObjectResolver do
     {:ok, attributes}
   end
 
-
   def find_columns(args, info) do
     res = objects_query(info.source.id, "column", info.context.cookies)
     {:ok,
@@ -162,6 +161,14 @@ defmodule Webapp.ObjectResolver do
     }
   end
 
+  def find_dimensions(args, info) do
+    res = objects_query(info.source.id, "dimension", info.context.cookies)
+    {:ok,
+      Parallel.map(res, &(remap(&1, @dimension, root: "dimension")))
+        |> filter_objects_by_criteria(args[:title], args[:identifier])
+    }
+  end
+
   def find_facts(args, info) do
     res = objects_query(info.source.id, "fact", info.context.cookies)
     {:ok,
@@ -179,6 +186,14 @@ defmodule Webapp.ObjectResolver do
       end
     )
     {:ok, facts}
+  end
+
+  def find_folders(args, info) do
+    res = objects_query(info.source.id, "folder", info.context.cookies)
+    {:ok,
+      Parallel.map(res, &(remap(&1, @folder, root: "folder")))
+        |> filter_objects_by_criteria(args[:title], args[:identifier])
+    }
   end
 
   def find_table_by_url(%{url: url}, info) do
@@ -269,22 +284,71 @@ defmodule Webapp.ObjectResolver do
     {:ok, export_report(info.source.url, info.context.cookies)}
   end
 
+  def find_visualizations(args, info) do
+    res = objects_query(info.source.id, "visualization", info.context.cookies)
+    {:ok,
+      Parallel.map(res, &(remap(&1, @visualization, root: "visualization")))
+        |> filter_objects_by_criteria(args[:title], args[:identifier])
+    }
+  end
+
   def find_used_by(arg, info) do
     project = Enum.at(String.split(info.source.url, "/"), 3)
     path = "/gdc/md/#{project}/usedby2/#{info.source.id}"
     res = Poison.decode!(Webapp.Request.get(path, info.context.cookies).body)
-    links = Parallel.map(Map.get(res, "entries"), fn(x) -> {Map.get(x, "category"), Map.get(x, "link")} end)
-    objects = Parallel.map(links, fn({c, uri}) -> {c, Poison.decode!(Webapp.Request.get(uri, info.context.cookies).body())} end)
-    {:ok, Parallel.map(objects, &remap_object/1)}
+    links = Parallel.map(
+      Map.get(res, "entries"),
+      fn(x) ->
+        {Map.get(x, "category"), Map.get(x, "link")}
+      end
+    )
+
+    objects = Parallel.map(
+      links,
+      fn({c, uri}) ->
+        res = Poison.decode!(Webapp.Request.get(uri, info.context.cookies).body())
+        {c, res}
+      end
+    )
+
+    filtered_objects = Enum.reject(
+      objects,
+      fn(item) ->
+        {_, object} = item
+        Map.get(object, "error") != nil
+      end
+    )
+    {:ok, Parallel.map(filtered_objects, &remap_object/1)}
   end
 
   def find_using(arg, info) do
     project = Enum.at(String.split(info.source.url, "/"), 3)
-    path = "/gdc/md/#{project}/using2/#{info.source.id}"
-    res = Poison.decode!(Webapp.Request.get(path, info.context.cookies).body)
-    links = Parallel.map(Map.get(res, "entries"), fn(x) -> {Map.get(x, "category"), Map.get(x, "link")} end)
-    objects = Parallel.map(links, fn({c, uri}) -> {c, Poison.decode!(Webapp.Request.get(uri, info.context.cookies).body())} end)
-    {:ok, Parallel.map(objects, &remap_object/1)}
+        path = "/gdc/md/#{project}/using2/#{info.source.id}"
+        res = Poison.decode!(Webapp.Request.get(path, info.context.cookies).body)
+        links = Parallel.map(
+          Map.get(res, "entries"),
+          fn(x) ->
+            {Map.get(x, "category"), Map.get(x, "link")}
+          end
+        )
+
+        objects = Enum.map(
+          links,
+          fn({c, uri}) ->
+            res = Poison.decode!(Webapp.Request.get(uri, info.context.cookies).body())
+            IO.inspect(Map.keys(res))
+            {c, res}
+          end
+        )
+
+        filtered_objects = Enum.reject(
+          objects,
+          fn(item) ->
+            {_, object} = item
+            Map.get(object, "error") != nil
+          end
+        )
+        {:ok, Parallel.map(filtered_objects, &remap_object/1)}
   end
 
   defp remap_object({c, o}) do
@@ -304,7 +368,7 @@ defmodule Webapp.ObjectResolver do
       "reportDefinition" -> remap(o, @report_definition, root: "reportDefinition")
       "scheduledMail" -> remap(o, @scheduled_mail, root: "scheduledMail")
       "table" -> remap(o, @table, root: "table")
-      "tableDataLoad" -> remap(o, @table_data_load, root: "table_data_load")
+      "tableDataLoad" -> remap(o, @table_data_load, root: "tableDataLoad")
       "visualization" -> remap(o, @visualization, root: "visualization")
     end
   end

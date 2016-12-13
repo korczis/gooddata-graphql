@@ -18,6 +18,7 @@ defmodule Webapp.Schema.Interfaces.Meta do
       %{category: "attribute"}, _ -> :attribute
       %{category: "attributeDisplayForm"}, _ -> :attribute_display_form
       %{category: "column"}, _ -> :column
+      %{category: "dataLoadingColumn"}, _ -> :data_loading_column
       %{category: "dataSet"}, _ -> :dataset
       %{category: "dimension"}, _ -> :dimension
       %{category: "domain"}, _ -> :domain

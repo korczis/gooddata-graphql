@@ -42,8 +42,19 @@ defmodule Webapp.Schema.Types.Project do
       arg :identifier, :string
       resolve &Webapp.ObjectResolver.find_datasets/2
     end
+    field :dimensions, list_of(:dimension) do
+      arg :title, :string
+      arg :identifier, :string
+      resolve &Webapp.ObjectResolver.find_dimensions/2
+    end
     field :facts, list_of(:fact), resolve: fn(_args, info) ->
       Webapp.ObjectResolver.find_facts(%{project: info.source.id}, info)
+    end
+    field :folders, list_of(:folder), resolve: fn(_args, info) ->
+      Webapp.ObjectResolver.find_folders(%{project: info.source.id}, info)
+    end
+    field :metrics, list_of(:metric), resolve: fn(_args, info) ->
+      Webapp.ObjectResolver.find_metrics(%{project: info.source.id}, info)
     end
     field :tables, list_of(:table) do
       arg :title, :string
@@ -67,6 +78,9 @@ defmodule Webapp.Schema.Types.Project do
     end
     field :reports, list_of(:report) do
       resolve &Webapp.ObjectResolver.find_reports/2
+    end
+    field :visualizations, list_of(:visualization) do
+      resolve &Webapp.ObjectResolver.find_visualizations/2
     end
   end
 end
