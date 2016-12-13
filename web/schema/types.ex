@@ -19,6 +19,7 @@ defmodule Webapp.Schema.Types do
   import_types Webapp.Schema.Types.Permissions
   import_types Webapp.Schema.Types.Project
   import_types Webapp.Schema.Types.ProjectDashboard
+  import_types Webapp.Schema.Types.Prompt
   import_types Webapp.Schema.Types.Report
   import_types Webapp.Schema.Types.ReportDefinition
   import_types Webapp.Schema.Types.Role

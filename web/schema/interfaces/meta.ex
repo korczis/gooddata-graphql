@@ -27,6 +27,7 @@ defmodule Webapp.Schema.Interfaces.Meta do
       %{category: "folder"}, _ -> :folder
       %{category: "metric"}, _ -> :metric
       %{category: "projectDashboard"}, _ -> :project_dashboard
+      %{category: "prompt"}, _ -> :prompt
       %{category: "report"}, _ -> :report
       %{category: "reportDefinition"}, _ -> :report_definition
       %{category: "scheduledMail"}, _ -> :scheduled_mail

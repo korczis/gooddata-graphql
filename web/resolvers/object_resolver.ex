@@ -92,6 +92,9 @@ defmodule Webapp.ObjectResolver do
     entries: "content.entries"
   ] ++ @mapping
 
+  @prompt [
+  ] ++ @mapping
+
   @report [
     definitions: "content.definitions"
   ] ++ @mapping
@@ -363,6 +366,7 @@ defmodule Webapp.ObjectResolver do
       "folder" -> remap(o, @folder, root: "folder")
       "metric" -> remap(o, @metric, root: "metric")
       "projectDashboard" -> remap(o, @project_dashboard, root: "projectDashboard")
+      "prompt" -> remap(o, @prompt, root: "prompt")
       "report" -> remap(o, @domain, root: "report")
       "reportDefinition" -> remap(o, @report_definition, root: "reportDefinition")
       "scheduledMail" -> remap(o, @scheduled_mail, root: "scheduledMail")
