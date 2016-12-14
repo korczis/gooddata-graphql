@@ -13,7 +13,7 @@ config :webapp, Webapp.Endpoint,
   pubsub: [name: Webapp.PubSub,
            adapter: Phoenix.PubSub.PG2],
   gooddata: [
-    host: System.get_env("GDC_HOSTNAME") || "lv-x.na.intgdc.com"
+    host: (System.get_env("GDC_HOSTNAME") || "lv-x.na.intgdc.com")
   ],
   httpoison: [
     hackney: [:insecure]

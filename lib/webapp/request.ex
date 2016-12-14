@@ -1,8 +1,6 @@
 defmodule Webapp.Request do
   require Logger
 
-  @host Application.get_env(:webapp, Webapp.Endpoint)[:gooddata][:host]
-
   @headers [
     {"Content-Type", "application/json"},
     {"Accept", "application/json"}
@@ -10,7 +8,7 @@ defmodule Webapp.Request do
 
   @options Application.get_env(:webapp, Webapp.Endpoint)[:httpoison]
 
-  def get(url, cookies \\ %{}) do
+  def get(url, cookies \\ %{}, use_cache \\ true) do
     key = "GET #{url}"
     case Cachex.get(:rest_cache, key) do
       {:ok, result} ->
@@ -18,17 +16,17 @@ defmodule Webapp.Request do
         result
       _ ->
         Logger.info key
-        remote_url = "https://#{@host}#{url}"
-        res = HTTPoison.get!(remote_url, get_headers(cookies), @options)
-        Cachex.set(:rest_cache, key, res)
+        res = HTTPoison.get!(construct_url(url), get_headers(cookies), @options)
+        if use_cache do
+          Cachex.set(:rest_cache, key, res)
+        end
         res
     end
   end
 
   def post(url, payload, cookies \\ %{}) do
     Logger.info "POST #{url}"
-
-    remote_url = "https://#{@host}#{url}"
+    remote_url = construct_url(url)
     HTTPoison.post!(remote_url, Poison.encode!(payload), get_headers(cookies), @options)
   end
 
@@ -52,5 +50,10 @@ defmodule Webapp.Request do
     |> Map.to_list
     |> Enum.map(fn({k, v}) -> "#{k}=#{v}" end)
     |> Enum.join("; ")
+  end
+
+  defp construct_url(url) do
+    host = Application.get_env(:webapp, Webapp.Endpoint)[:gooddata][:host]
+    "https://#{host}#{url}"
   end
 end

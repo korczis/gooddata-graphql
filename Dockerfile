@@ -3,6 +3,9 @@ FROM elixir
 # Switch to directory with sources
 WORKDIR /src
 
+RUN apt-get update \
+  && apt-get install -y inotify-tools
+
 # Copy required stuff
 ADD . .
 
@@ -19,6 +22,8 @@ RUN export NVM_DIR="/root/.nvm" \
   && [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  \
   && nvm install 6.6.0 \
   && npm install
+
+RUN MIX_ENV=prod mix compile
 
 ADD .docker/start.sh /start.sh
 

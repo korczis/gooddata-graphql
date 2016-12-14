@@ -1,4 +1,5 @@
 defmodule Webapp do
+  require Logger
   use Application
 
   # See http://elixir-lang.org/docs/stable/elixir/Application.html
@@ -6,6 +7,7 @@ defmodule Webapp do
   def start(_type, _args) do
     import Supervisor.Spec
 
+    Logger.info "Using #{Application.get_env(:webapp, Webapp.Endpoint)[:gooddata][:host]}"
     # Define workers and child supervisors to be supervised
     children = [
       # Start the endpoint when the application starts
