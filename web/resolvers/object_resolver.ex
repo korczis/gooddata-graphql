@@ -371,7 +371,12 @@ defmodule Webapp.ObjectResolver do
         fn(item) ->
           category = List.first(Map.keys(item))
           res = Map.fetch!(item, category)
-          Map.put_new(res, :category, category)
+          res
+          |> Map.put_new(:position_x, Map.fetch!(res, "positionX"))
+          |> Map.put_new(:position_y, Map.fetch!(res, "positionY"))
+          |> Map.put_new(:size_x, Map.fetch!(res, "sizeX"))
+          |> Map.put_new(:size_y, Map.fetch!(res, "sizeY"))
+          |> Map.put_new(:category, category)
         end
         )
     }
