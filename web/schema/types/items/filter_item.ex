@@ -7,6 +7,7 @@ defmodule Webapp.Schema.Types.Item.FilterItem do
     field :position_y, :integer
     field :size_x, :integer
     field :size_y, :integer
+    field :category, :string
 
     interface :item
   end

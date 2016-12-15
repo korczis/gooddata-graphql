@@ -6,13 +6,14 @@ defmodule Webapp.Schema.Interfaces.Item do
     field :position_y, :integer
     field :size_x, :integer
     field :size_y, :integer
+    field :category, :string
 
     resolve_type fn
-      %{"category" => "filterItem"}, _ -> :filter_item
-      %{"category" => "headlineItem"}, _ -> :headline_item
-      %{"category" => "iframeItem"}, _ -> :iframe_item
-      %{"category" => "reportItem"}, _ -> :report_item
-      %{"category" => "textItem"}, _ -> :text_item
+      %{:category => "filterItem"}, _ -> :filter_item
+      %{:category => "headlineItem"}, _ -> :headline_item
+      %{:category => "iframeItem"}, _ -> :iframe_item
+      %{:category => "reportItem"}, _ -> :report_item
+      %{:category => "textItem"}, _ -> :text_item
     end
   end
 end
