@@ -19,6 +19,9 @@ defmodule Webapp.Schema.Types.ProjectDashboard do
     field :using, list_of(:meta) do
       resolve &Webapp.ObjectResolver.find_using/2
     end
+    field :tabs, list_of(:project_dashboard_tab) do
+      resolve &Webapp.ObjectResolver.transform_tabs/2
+    end
     interface :meta
   end
 end

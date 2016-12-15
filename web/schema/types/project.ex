@@ -37,6 +37,11 @@ defmodule Webapp.Schema.Types.Project do
       arg :identifier, :string
       resolve &Webapp.ObjectResolver.find_data_loading_columns/2
     end
+    field :dashboards, list_of(:project_dashboard) do
+      arg :title, :string
+      arg :identifier, :string
+      resolve &Webapp.ObjectResolver.find_dashboards/2
+    end
     field :datasets, list_of(:dataset) do
       arg :title, :string
       arg :identifier, :string

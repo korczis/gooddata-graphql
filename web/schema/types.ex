@@ -2,7 +2,13 @@ defmodule Webapp.Schema.Types do
   use Absinthe.Schema.Notation
 
   # Interfaces
+  import_types Webapp.Schema.Interfaces.Item
   import_types Webapp.Schema.Interfaces.Meta
+
+  # Items
+  Webapp.Schema.Types.Item.HeadlineItem
+  Webapp.Schema.Types.Item.IframeItem
+  Webapp.Schema.Types.Item.ReportItem
 
   # Types
   import_types Webapp.Schema.Types.Attribute
@@ -19,6 +25,7 @@ defmodule Webapp.Schema.Types do
   import_types Webapp.Schema.Types.Permissions
   import_types Webapp.Schema.Types.Project
   import_types Webapp.Schema.Types.ProjectDashboard
+  import_types Webapp.Schema.Types.ProjectDashboardTab
   import_types Webapp.Schema.Types.Prompt
   import_types Webapp.Schema.Types.Report
   import_types Webapp.Schema.Types.ReportDefinition

@@ -41,7 +41,7 @@ defmodule Webapp.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:absinthe, "~> 1.2.0"},
+      {:absinthe, "~> 1.2.1"},
       {:absinthe_plug, "~> 1.2.0"},
       {:cachex, "~> 2.0"},
       {:comeonin, "~> 2.3"},

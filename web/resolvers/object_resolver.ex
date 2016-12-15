@@ -33,6 +33,7 @@ defmodule Webapp.ObjectResolver do
   ] ++ @mapping
 
   @project_dashboard [
+    tabs: "content.tabs"
   ] ++ @mapping
 
   @dimension [
@@ -164,6 +165,14 @@ defmodule Webapp.ObjectResolver do
     }
   end
 
+  def find_dashboards(args, info) do
+    res = objects_query(info.source.id, "projectDashboard", info.context.cookies)
+    {:ok,
+      Parallel.map(res, &(remap(&1, @project_dashboard, root: "projectDashboard")))
+        |> filter_objects_by_criteria(args[:title], args[:identifier])
+    }
+  end
+
   def find_dimensions(args, info) do
     res = objects_query(info.source.id, "dimension", info.context.cookies)
     {:ok,
@@ -280,7 +289,7 @@ defmodule Webapp.ObjectResolver do
 
   def find_reports(_arg, info) do
     res = objects_query(info.source.id, "report", info.context.cookies)
-    {:ok, Enum.map(res, &(remap(&1, @report, root: "report")))}
+    {:ok, Parallel.map(res, &(remap(&1, @report, root: "report")))}
   end
 
   def get_report_data(_arg, info) do
@@ -351,6 +360,38 @@ defmodule Webapp.ObjectResolver do
           end
         )
         {:ok, Parallel.map(filtered_objects, &remap_object/1)}
+  end
+
+  def transform_items(_arg, info) do
+    items = info.source.items
+    {
+      :ok,
+      Parallel.map(
+        items,
+        fn(item) ->
+          category = List.first(Map.keys(item))
+          res = Map.fetch!(item, category)
+          Map.put_new(res, "category", category)
+        end
+        )
+    }
+  end
+
+  def transform_tabs(_arg, info) do
+    tabs = info.source.tabs
+    {
+      :ok,
+      Parallel.map(
+        tabs,
+        fn(tab) ->
+          %{
+            title: Map.fetch!(tab, "title"),
+            identifier: Map.fetch!(tab, "identifier"),
+            items: Map.fetch!(tab, "items")
+          }
+        end
+        )
+    }
   end
 
   defp remap_object({c, o}) do
