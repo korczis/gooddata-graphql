@@ -6,9 +6,9 @@ defmodule Webapp.Schema.Types do
   import_types Webapp.Schema.Interfaces.Meta
 
   # Items
-  Webapp.Schema.Types.Item.HeadlineItem
-  Webapp.Schema.Types.Item.IframeItem
-  Webapp.Schema.Types.Item.ReportItem
+  import_types Webapp.Schema.Types.Item.HeadlineItem
+  import_types Webapp.Schema.Types.Item.IframeItem
+  import_types Webapp.Schema.Types.Item.ReportItem
 
   # Types
   import_types Webapp.Schema.Types.Attribute
