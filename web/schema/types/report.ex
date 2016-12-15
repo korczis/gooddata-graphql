@@ -9,7 +9,10 @@ defmodule Webapp.Schema.Types.Report do
     field :category, :string
     field :identifier, :string
     field :definitions, list_of(:string)
-    field :data, :string, resolve: &Webapp.ObjectResolver.get_report_data/2
+    field :raw_data, :string, resolve: &Webapp.ObjectResolver.get_report_data/2
+    field :data, :string, resolve: fn(_args, info) ->
+      {:ok, nil}
+    end
     field :author, :user, resolve: fn(_args, info) ->
       Webapp.UserResolver.find(%{id: info.source.author}, info)
     end
