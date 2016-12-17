@@ -11,8 +11,6 @@ defmodule Webapp.API.V1.AuthController do
       }
     })
 
-    IO.inspect(res)
-
     conn
     |> put_cookies(res)
     |> Webapp.Helper.tt_refreshed
@@ -26,8 +24,6 @@ defmodule Webapp.API.V1.AuthController do
 
   def user(conn, _params) do
     data = Poison.decode!(Webapp.Request.get("/gdc/app/account/bootstrap", conn.cookies, false).body)
-
-    IO.inspect(data)
 
     user = get_in(data, ["bootstrapResource", "accountSetting"])
     user_url = get_in(data, ["bootstrapResource", "accountSetting", "links", "self"])

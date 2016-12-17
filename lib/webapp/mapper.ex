@@ -57,7 +57,7 @@ defmodule Webapp.Mapper do
   defp root(options) do
     case options[:root] do
       nil  -> []
-      root -> path(root)
+      root_element -> path(root_element)
     end
   end
 
