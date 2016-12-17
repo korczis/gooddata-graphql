@@ -19,6 +19,13 @@ defmodule Webapp.ObjectResolver do
     url: "meta.uri"
   ]
 
+  @mapping_item [
+    position_x: "positionX",
+    position_y: "positionY",
+    size_x: "sizeX",
+    size_y: "sizeY",
+  ]
+
   @attribute [
     dimension: "content.dimension",
     direction: "content.direction",
@@ -372,12 +379,7 @@ defmodule Webapp.ObjectResolver do
         fn(item) ->
           category = List.first(Map.keys(item))
           res = Map.fetch!(item, category)
-          res
-          |> Map.put_new(:position_x, Map.fetch!(res, "positionX"))
-          |> Map.put_new(:position_y, Map.fetch!(res, "positionY"))
-          |> Map.put_new(:size_x, Map.fetch!(res, "sizeX"))
-          |> Map.put_new(:size_y, Map.fetch!(res, "sizeY"))
-          |> Map.put_new(:category, category)
+          remap_item({category, item})
         end
         )
     }
@@ -421,6 +423,17 @@ defmodule Webapp.ObjectResolver do
       "tableDataLoad" -> remap(o, @table_data_load, root: "tableDataLoad")
       "visualization" -> remap(o, @visualization, root: "visualization")
     end
+  end
+
+  defp remap_item({c, o}) do
+    case c do
+      "filterItem" -> remap(o, @mapping_item, root: c)
+      "headlineItem" -> remap(o, @mapping_item, root: c)
+      "iframeItem" -> remap(o, @mapping_item, root: c)
+      "reportItem" -> remap(o, @mapping_item, root: c)
+      "textItem" -> remap(o, @mapping_item, root: c)
+    end
+    |> Map.put_new(:category, c)
   end
 
   defp export_report(uri, cookies) do
