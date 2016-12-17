@@ -19,13 +19,6 @@ defmodule Webapp.ObjectResolver do
     url: "meta.uri"
   ]
 
-  @mapping_item [
-    position_x: "positionX",
-    position_y: "positionY",
-    size_x: "sizeX",
-    size_y: "sizeY",
-  ]
-
   @attribute [
     dimension: "content.dimension",
     direction: "content.direction",
@@ -113,6 +106,40 @@ defmodule Webapp.ObjectResolver do
 
   @visualization [
   ] ++ @mapping
+
+  @mapping_item [
+    position_x: "positionX",
+    position_y: "positionY",
+    size_x: "sizeX",
+    size_y: "sizeY",
+  ]
+
+  @filter_item [
+  ] ++ @mapping_item
+
+  @geo_chart_item [
+  ] ++ @mapping_item
+
+  @headline_item [
+    linked_with_external_filter: "linkedWithExternalFilter",
+    title: "title",
+    format: "format"
+  ] ++ @mapping_item
+
+  @iframe_item [
+    url: "url"
+  ] ++ @mapping_item
+
+  @line_item [
+  ] ++ @mapping_item
+
+  @report_item [
+  ] ++ @mapping_item
+
+  @text_item [
+    text: "text",
+    text_size: "textSize"
+  ] ++ @mapping_item
 
   def find_attributes(%{project: id}, info) do
     res = objects_query(id, "attribute", info.context.cookies)
@@ -427,11 +454,13 @@ defmodule Webapp.ObjectResolver do
 
   defp remap_item({c, o}) do
     case c do
-      "filterItem" -> remap(o, @mapping_item, root: c)
-      "headlineItem" -> remap(o, @mapping_item, root: c)
-      "iframeItem" -> remap(o, @mapping_item, root: c)
-      "reportItem" -> remap(o, @mapping_item, root: c)
-      "textItem" -> remap(o, @mapping_item, root: c)
+      "filterItem" -> remap(o, @filter_item, root: c)
+      "geoChartItem" -> remap(o, @geo_chart_item, root: c)
+      "headlineItem" -> remap(o, @headline_item, root: c)
+      "iframeItem" -> remap(o, @iframe_item, root: c)
+      "lineItem" -> remap(o, @line_item, root: c)
+      "reportItem" -> remap(o, @report_item, root: c)
+      "textItem" -> remap(o, @text_item, root: c)
     end
     |> Map.put_new(:category, c)
   end

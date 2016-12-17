@@ -8,6 +8,9 @@ defmodule Webapp.Schema.Types.Item.HeadlineItem do
     field :size_x, :integer
     field :size_y, :integer
     field :category, :string
+    field :linked_with_external_filter, :integer
+    field :title, :string
+    field :format, :string
 
     interface :item
   end

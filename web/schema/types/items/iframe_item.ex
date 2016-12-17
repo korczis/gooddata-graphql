@@ -8,6 +8,7 @@ defmodule Webapp.Schema.Types.Item.IframeItem do
     field :size_x, :integer
     field :size_y, :integer
     field :category, :string
+    field :url, :string
 
     interface :item
   end

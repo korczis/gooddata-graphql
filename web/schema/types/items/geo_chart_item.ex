@@ -1,15 +1,13 @@
-defmodule Webapp.Schema.Types.Item.TextItem do
+defmodule Webapp.Schema.Types.Item.GeoChartItem do
   use Absinthe.Schema.Notation
 
-  @desc "Text Item"
-  object :text_item do
+  @desc "Geo Chart Item"
+  object :geo_chart_item do
     field :position_x, :integer
     field :position_y, :integer
     field :size_x, :integer
     field :size_y, :integer
     field :category, :string
-    field :text_size, :string
-    field :text, :string
 
     interface :item
   end

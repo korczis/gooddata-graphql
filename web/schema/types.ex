@@ -7,8 +7,10 @@ defmodule Webapp.Schema.Types do
 
   # Items
   import_types Webapp.Schema.Types.Item.FilterItem
+  import_types Webapp.Schema.Types.Item.GeoChartItem
   import_types Webapp.Schema.Types.Item.HeadlineItem
   import_types Webapp.Schema.Types.Item.IframeItem
+  import_types Webapp.Schema.Types.Item.LineItem
   import_types Webapp.Schema.Types.Item.ReportItem
   import_types Webapp.Schema.Types.Item.TextItem
 
