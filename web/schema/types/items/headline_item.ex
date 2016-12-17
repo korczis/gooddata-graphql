@@ -11,6 +11,12 @@ defmodule Webapp.Schema.Types.Item.HeadlineItem do
     field :linked_with_external_filter, :integer
     field :title, :string
     field :format, :string
+    field :metric, :metric, resolve: fn(_args, info) ->
+      Webapp.ObjectResolver.get_metric(%{url: info.source.metric}, info)
+    end
+    field :display_form, :attribute_display_form, resolve: fn(_args, info) ->
+      Webapp.ObjectResolver.get_attribute_display_form(%{url: info.source.display_form}, info)
+    end
 
     interface :item
   end

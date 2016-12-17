@@ -121,7 +121,9 @@ defmodule Webapp.ObjectResolver do
   ] ++ @mapping_item
 
   @headline_item [
+    metric: "metric",
     linked_with_external_filter: "linkedWithExternalFilter",
+    display_form: "filterAttributeDF",
     title: "title",
     format: "format"
   ] ++ @mapping_item
@@ -163,6 +165,12 @@ defmodule Webapp.ObjectResolver do
       end
     )
     {:ok, attributes}
+  end
+
+  def get_attribute_display_form(%{url: url}, info) do
+    res = Poison.decode!(Webapp.Request.get(url, info.context.cookies).body())
+    attribute_display_form = remap(res, @attribute_display_form, root: "attributeDisplayForm")
+    {:ok, attribute_display_form}
   end
 
   def find_columns(args, info) do
@@ -297,6 +305,12 @@ defmodule Webapp.ObjectResolver do
         end
     end)
     {:ok, entries}
+  end
+
+  def get_metric(%{url: url}, info) do
+    res = Poison.decode!(Webapp.Request.get(url, info.context.cookies).body())
+    metric = remap(res, @metric, root: "metric")
+    {:ok, metric}
   end
 
   def find_metrics(%{project: id}, info) do
