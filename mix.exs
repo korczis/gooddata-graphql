@@ -20,6 +20,7 @@ defmodule Webapp.Mixfile do
      applications: [
       :absinthe,
       :absinthe_plug,
+      :absinthe_relay,
       :cachex,
       :phoenix,
       :phoenix_pubsub,
@@ -43,7 +44,9 @@ defmodule Webapp.Mixfile do
     [
       {:absinthe, "~> 1.2.1"},
       {:absinthe_plug, "~> 1.2.0"},
+      {:absinthe_relay, "~> 1.2.0"},
       {:cachex, "~> 2.0"},
+      {:credo, "~> 0.5", only: [:dev, :test]},
       {:comeonin, "~> 2.3"},
       {:credo, "~> 0.4", only: [:dev, :test]},
       {:dialyxir, "~> 0.3.5", only: [:dev]},

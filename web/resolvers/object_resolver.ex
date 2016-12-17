@@ -33,7 +33,8 @@ defmodule Webapp.ObjectResolver do
   ] ++ @mapping
 
   @project_dashboard [
-    tabs: "content.tabs"
+    tabs: "content.tabs",
+    remember_filters: "content.rememberFilters"
   ] ++ @mapping
 
   @dimension [
@@ -416,7 +417,7 @@ defmodule Webapp.ObjectResolver do
       "report" -> remap(o, @domain, root: "report")
       "reportDefinition" -> remap(o, @report_definition, root: "reportDefinition")
       "scheduledMail" -> remap(o, @scheduled_mail, root: "scheduledMail")
-      "table" -> remap(o, @table, root: "table")
+      "table" -> remap(o, @table, root: "tab§  le")
       "tableDataLoad" -> remap(o, @table_data_load, root: "tableDataLoad")
       "visualization" -> remap(o, @visualization, root: "visualization")
     end

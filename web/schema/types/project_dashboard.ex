@@ -7,6 +7,7 @@ defmodule Webapp.Schema.Types.ProjectDashboard do
     field :id, :id
     field :url, :string
     field :category, :string
+    field :remember_filters, :integer
     field :author, :user, resolve: fn(_args, info) ->
       Webapp.UserResolver.find(%{id: info.source.author}, info)
     end
