@@ -10,7 +10,7 @@ defmodule Webapp.Schema.Types.Item.ReportItem do
     field :category, :string
 
     field :report, :report, resolve: fn(_args, info) ->
-      {:ok, %{}}
+      Webapp.ObjectResolver.get_report(%{url: info.source.report}, info)
     end
 
     interface :item

@@ -136,6 +136,7 @@ defmodule Webapp.ObjectResolver do
   ] ++ @mapping_item
 
   @report_item [
+    report: "obj",
   ] ++ @mapping_item
 
   @text_item [
@@ -327,6 +328,12 @@ defmodule Webapp.ObjectResolver do
       end
     )
     {:ok, result}
+  end
+
+  def get_report(%{url: url}, info) do
+    res = Poison.decode!(Webapp.Request.get(url, info.context.cookies).body())
+    report = remap(res, @report, root: "report")
+    {:ok, report}
   end
 
   def find_report(%{id: id}, info) do
