@@ -20,8 +20,10 @@ defmodule Webapp.Schema.Types do
   import_types Webapp.Schema.Types.Column
   import_types Webapp.Schema.Types.DataLoadingColumn
   import_types Webapp.Schema.Types.Dataset
+  import_types Webapp.Schema.Types.DataResult
   import_types Webapp.Schema.Types.Dimension
   import_types Webapp.Schema.Types.Domain
+  import_types Webapp.Schema.Types.ExecutionResult
   import_types Webapp.Schema.Types.ExecutionContext
   import_types Webapp.Schema.Types.Fact
   import_types Webapp.Schema.Types.Folder

@@ -67,6 +67,12 @@ defmodule Webapp.ObjectResolver do
   @execution_context [
   ] ++ @mapping
 
+  @execution_result [
+    data_result: "dataResult",
+    format: "reportView.format",
+    report_name: "reportView.reportName"
+  ]
+
   @fact [
     folders: "content.folders",
     exprs: "content.expr"
@@ -144,6 +150,10 @@ defmodule Webapp.ObjectResolver do
     text_size: "textSize"
   ] ++ @mapping_item
 
+  @xtab_data [
+    data: "data"
+  ]
+
   def find_attributes(%{project: id}, info) do
     res = objects_query(id, "attribute", info.context.cookies)
     {:ok, Parallel.map(res, &(remap(&1, @attribute, root: "attribute")))}
@@ -215,6 +225,12 @@ defmodule Webapp.ObjectResolver do
       Parallel.map(res, &(remap(&1, @project_dashboard, root: "projectDashboard")))
         |> filter_objects_by_criteria(args[:title], args[:identifier])
     }
+  end
+
+  def get_data_result(_args, info) do
+    res = Poison.decode!(Webapp.Request.get(info.source.data_result, info.context.cookies).body)
+    xtab_data = remap(res, @xtab_data, root: "xtab_data")
+    {:ok, xtab_data}
   end
 
   def find_dimensions(args, info) do
@@ -346,6 +362,11 @@ defmodule Webapp.ObjectResolver do
   def find_reports(_arg, info) do
     res = objects_query(info.source.id, "report", info.context.cookies)
     {:ok, Parallel.map(res, &(remap(&1, @report, root: "report")))}
+  end
+
+  def get_report_result(_arg, info) do
+    res = execute_report(info.source.url, info.context.cookies)
+    {:ok, remap(res, @execution_result, root: "execResult")}
   end
 
   def get_report_data(_arg, info) do
@@ -486,6 +507,17 @@ defmodule Webapp.ObjectResolver do
     |> Map.put_new(:category, c)
   end
 
+  defp execute_report(uri, cookies) do
+    project = Enum.at(String.split(uri, "/"), 3)
+    path = "/gdc/app/projects/#{project}/execute/"
+    payload = %{
+      report_req: %{
+        report: uri
+      }
+    }
+    Poison.decode!(Webapp.Request.post(path, payload, cookies).body)
+  end
+
   defp export_report(uri, cookies) do
     project = Enum.at(String.split(uri, "/"), 3)
     path = "/gdc/app/projects/#{project}/execute/raw/"
@@ -499,8 +531,9 @@ defmodule Webapp.ObjectResolver do
   end
 
   defp filter_objects_by_criteria(list, title \\ nil, identifier \\ nil) do
-    filter_by_title(list, title)
-      |> filter_by_identifier(identifier)
+    list
+    |> filter_by_title(title)
+    |> filter_by_identifier(identifier)
   end
 
   defp filter_by_title(list, nil) do
