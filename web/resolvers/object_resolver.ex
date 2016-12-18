@@ -228,9 +228,12 @@ defmodule Webapp.ObjectResolver do
   end
 
   def get_data_result(_args, info) do
-    res = Poison.decode!(Webapp.Request.get(info.source.data_result, info.context.cookies).body)
-    xtab_data = remap(res, @xtab_data, root: "xtab_data")
-    {:ok, xtab_data}
+    case Poison.decode(Webapp.Request.get(info.source.data_result, info.context.cookies).body) do
+      {:ok, res} ->
+        xtab_data = remap(res, @xtab_data, root: "xtab_data")
+        {:ok, xtab_data}
+      _ -> {:ok, nil}
+    end
   end
 
   def find_dimensions(args, info) do
