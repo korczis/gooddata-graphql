@@ -228,10 +228,11 @@ defmodule Webapp.ObjectResolver do
   end
 
   def get_data_result(_args, info) do
-    case Poison.decode(Webapp.Request.get(info.source.data_result, info.context.cookies).body) do
+    json = Webapp.Request.get(info.source.data_result, info.context.cookies).body
+    case Poison.decode(json) do
       {:ok, res} ->
         xtab_data = remap(res, @xtab_data, root: "xtab_data")
-        {:ok, xtab_data}
+        {:ok, Map.put_new(xtab_data, :json, json)}
       _ -> {:ok, nil}
     end
   end
